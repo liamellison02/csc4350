@@ -19,6 +19,7 @@
 ## Team Members
 
 **Main Instructor Contact:** Liam Ellison - [lellison6@student.gsu.edu](mailto:lellison6@student.gsu.edu)
+
 **Secondary Instructor Contact:** Obaid Younus - [oyounus2@student.gsu.edu](mailto:oyounus2@student.gsu.edu)
 
 
