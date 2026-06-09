@@ -2,7 +2,7 @@
 
 ## Team Name (Group 14)
 
-**Team Name:** [                    ]
+**Team Name:** LOKK
 
 ---
 
@@ -19,6 +19,8 @@
 ## Team Members
 
 **Main Instructor Contact:** Liam Ellison - [lellison6@student.gsu.edu](mailto:lellison6@student.gsu.edu)
+**Secondary Instructor Contact:** Obaid Younus - [oyounus2@student.gsu.edu](mailto:oyounus2@student.gsu.edu)
+
 
 ---
 
@@ -57,6 +59,8 @@
 ## Team Meeting
 
 *[Insert screenshot of team video call or photo of laptops together]*
+
+![meeting image](images/meeting1.png)
 
 **Date of first meeting:** 06-09-2026
 
@@ -193,5 +197,5 @@ A member is considered non-contributing if they meet ALL of the following:
 
 ---
 
-*Document completed: [Date]*
-*Submitted by: [Name]*
+*Document completed: 06-10-2026*
+*Submitted by: [TBD]*
