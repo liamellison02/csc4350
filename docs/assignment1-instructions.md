@@ -5,22 +5,22 @@
 Get to know your team and make decisions about your own rules.
 Submit a document containing the following:
 
-#### Introduce your team: give your team a unique name. (10 pt)
+### Introduce your team: give your team a unique name. (10 pt)
 - [ ] What are the strengths of your team as a whole?
 
 
-#### Introduce each team member (30 pts)
+### Introduce each team member (30 pts)
 - [ ] Include a 100 word biography of each team member.
 A biography should be professional as if you were introducing yourself to a prospective employer.
 - [ ] Identify one team member who will serve as the main contact for the instructor 
 
 
-#### Hold your first virtual meeting (10 pt)
+### Hold your first virtual meeting (10 pt)
 Include a picture showing your camera feeds in a video conferencing software of your choice.
 If you have a physical meeting take a pic of your laptops together.
 
 
-#### Discuss every aspect of the team agreement in detail and describe all your decisions in the writeup (50 pts)
+### Discuss every aspect of the team agreement in detail and describe all your decisions in the writeup (50 pts)
 
 Your team agreement must include the guidelines for the following (but feel free to add any other items you believe are important):
 
@@ -39,8 +39,9 @@ Your team agreement must include the guidelines for the following (but feel free
 - [ ] What clear metric will you use to determing a non contibuting member?
 
 **Important note:**
-It's **not OK** to have a strict division of responsibilities:
-- e.g. one team member will write all documentation/reports, one will serve as a team manager, one will serve as a developer, one will serve as a tester.
+It's **not OK** to have a strict division of responsibilities.
+Ex: 1 team member will write all documentation/reports, 1 will serve as a team manager, 1 will serve as a developer, 1 will serve as a tester.
+
 Each team member is expected to contribute to **a broad spectrum** of the team's tasks.
 
 - [ ] Submitting assignments (when to submit, who will submit, who will review the submission, ...)

@@ -1,10 +1,7 @@
-# CSC 4350 - Assignment 1: Team Information and Contract
+# Assignment 1: Team Information and Contract
 
----
+## Team Name (Group 14)
 
-## Team Name
-
-(Group 14)
 **Team Name:** [                    ]
 
 ---
@@ -23,11 +20,11 @@
 
 ## Team Members
 
-**Main Instructor Contact:** [Liam Ellison] - [lellison6@student.gsu.edu](mailto:lellison6@student.gsu.edu)
+**Main Instructor Contact:** Liam Ellison - [lellison6@student.gsu.edu](mailto:lellison6@student.gsu.edu)
 
 ---
 
-### [Liam Ellison]
+### Liam Ellison
 **GitHub:** [liamellison02](https://github.com/liamellison02)
 
 [~100-word professional biography]
@@ -48,7 +45,7 @@
 
 ---
 
-### [Member 4 Name]  *(if applicable)*
+### [Member 4 Name]
 **GitHub:** [username]
 
 [~100-word professional biography]
@@ -59,14 +56,15 @@
 
 *[Insert screenshot of team video call or photo of laptops together]*
 
-**Date of first meeting:** [06-09-2026]
-**Platform used:** [Google Meet]
+**Date of first meeting:** 06-09-2026
+
+**Platform used:** Google Meet
 
 ---
 
 ## GitHub Repository
 
-**Repo link:** [https://github.com/liamellison02/csc4350]
+**Repo link:** [liamellison02/csc4350](https://github.com/liamellison02/csc4350)
 
 ---
 
@@ -74,16 +72,16 @@
 
 ### Methods of Communication
 
-**Primary platform:** [Discord]
+**Primary platform:** Discord
 
-**Secondary / backup:** [Email]
+**Secondary / backup:** Email
 
 **Response time expectation:**
 - Standard messages: respond within [X] hours
 - Urgent / time-sensitive: respond within [X] hours
 - Email: respond within [X] hours
 
-[(Additional context on how the team will communicate)]
+[Additional context on how the team will communicate]
 
 ---
 
@@ -101,11 +99,11 @@
 
 ### Running Meetings
 
-**Format:** [Online]
+**Format:** Online
 
 **Meeting chair:** [Rotate each meeting / designated person]
 
-**Note-taker:** [Granola / Calendly Notetaker (AI)]
+**Note-taker:** Granola / Calendly Notetaker (AI)
 
 **Agenda:** [Will an agenda be shared before meetings? How far in advance?]
 
