@@ -26,6 +26,7 @@
 
 **GitHub:** [liamellison02](https://github.com/liamellison02)
 
+I am Liam.
 [~100-word professional biography]
 
 ---
