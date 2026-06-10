@@ -49,11 +49,11 @@
 
 ---
 
-### [Member 4 Name]
+### Obaid Younus
 
-**GitHub:** [username]
+**GitHub:** [obaidyounus24](https://github.com/spiderberry)
 
-[~100-word professional biography]
+My name is Obaid Younus, and I am currently a fourth-year Computer Science student at Georgia State University. I am passionate about technology and enjoy learning how software and data can be used to solve real-world problems. Throughout my studies, I have developed experience in programming, software development, and data analysis while working on both academic and professional projects. I am always looking for opportunities to expand my skills, take on new challenges, and grow as a technology professional. After graduation, I hope to build a career in the technology industry where I can continue learning and make a meaningful impact.
 
 ---
 
