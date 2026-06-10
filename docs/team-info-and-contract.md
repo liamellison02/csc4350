@@ -41,11 +41,27 @@ Dandre Kennedy is a Computer Science major at Georgia State University with a st
 
 ---
 
-### [Member 3 Name]
+### Kristie Richards
 
-**GitHub:** [username]
+**GitHub:** [krisrich430](https://github.com/krisrich430)
 
-[~100-word professional biography]
+Kristie Richards is a senior Computer Science student at 
+Georgia State University with a strong commitment to growth and excellence.
+While relatively new to the technology field, she brings 
+years of professional experience, a proven ability to learn 
+quickly, and a collaborative mindset
+that consistently contributes to team success. 
+She has worked with academic teams requiring
+both technical implementation and structured documentation, 
+and is passionate about applying
+those skills to solve meaningful problems and create value. 
+With hands-on experience in Python,
+Java, and collaborative tools like Git and GitHub, Kristie approaches 
+every opportunity with
+enthusiasm and a genuine desire to improve. 
+As she continues her journey in technology, she is
+excited to bring her growing technical knowledge and professional 
+strengths to make a lasting impact.
 
 ---
 
