@@ -17,7 +17,7 @@ A biography should be professional as if you were introducing yourself to a pros
 
 ### Hold your first virtual meeting (10 pt)
 
-Include a picture showing your camera feeds in a video conferencing software of your choice.
+~~Include a picture showing your camera feeds in a video conferencing software of your choice.~~
 If you have a physical meeting take a pic of your laptops together.
 
 ### Discuss every aspect of the team agreement in detail and describe all your decisions in the writeup (50 pts)
