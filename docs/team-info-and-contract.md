@@ -40,11 +40,21 @@ My interests include math, agents, game theory, markets and trading.
 
 ---
 
-### Dandre Kennedy
+### D'Andre Kennedy
 
 **GitHub:** [spiderberry] (https://github.com/spiderberry)
+s
+D'Andre Kennedy is a Computer Science major at Georgia State University
+with a strong interest in full-stack web development and software engineering.
+Through academic and personal projects, he has gained experience
+working with Java, Python, SQL, HTML, and CSS. His project experience includes
+contributing to the development of an Employee Management System, a multiplayer 
+trivia game, and a simulation game.
+Dandre thrives in collaborative environments, combining strong technical
+problem-solving skills with clear communication and teamwork. He is eager to
+apply his skills in a team setting, continue growing as a software developer,
+and contribute to the overall success of the project.
 
-Dandre Kennedy is a Computer Science major at Georgia State University with a strong interest in full-stack web development and software engineering. Through academic and personal projects, he has gained experience working with Java, Python, SQL, HTML, and CSS. His project experience includes contributing to the development of an Employee Management System, a multiplayer trivia game, and a simulation game. Dandre thrives in collaborative environments, combining strong technical problem-solving skills with clear communication and teamwork. He is eager to apply his skills in a team setting, continue growing as a software developer, and contribute to the overall success of the project.
 ---
 
 ### Kristie Richards
@@ -75,7 +85,12 @@ strengths to make a lasting impact.
 
 **GitHub:** [obaidyounus24](https://github.com/spiderberry)
 
-My name is Obaid Younus, and I am currently a fourth-year Computer Science student at Georgia State University. I am passionate about technology and enjoy learning how software and data can be used to solve real-world problems. Throughout my studies, I have developed experience in programming, software development, and data analysis while working on both academic and professional projects. I am always looking for opportunities to expand my skills, take on new challenges, and grow as a technology professional. After graduation, I hope to build a career in the technology industry where I can continue learning and make a meaningful impact.
+My name is Obaid Younus, and I am currently a fourth-year Computer Science
+student at Georgia State University. I am passionate about technology and 
+enjoy learning how software and data can be used to solve real-world problems. 
+Throughout my studies, I have developed experience in programming, software 
+development, and data analysis while working on both academic and professional 
+projects. I am always looking for opportunities to expand my skills, take on new challenges, and grow as a technology professional. After graduation, I hope to build a career in the technology industry where I can continue learning and make a meaningful impact.
 
 ---
 
@@ -119,9 +134,11 @@ My name is Obaid Younus, and I am currently a fourth-year Computer Science stude
 
 **Platform:** Google Meet or Discord
 
-**Attendance policy:** Yes, excused absences are permitted with valid excuses AND prior notice.
+**Attendance policy:** Yes, excused absences are permitted with 
+valid excuses AND prior notice.
 
-**Cancellation/reschedule notice:** At least 2 hours in advance via Discord/SMS.
+**Cancellation/reschedule notice:** At least 2 hours in advance 
+via Discord/SMS.
 
 ---
 
@@ -140,7 +157,8 @@ My name is Obaid Younus, and I am currently a fourth-year Computer Science stude
 Required pre-meeting tasks:
 
 - Look over previous meeting's notes
-- Prepare any deliverables from previous week and be ready to demo if applicable
+- Prepare any deliverables from previous week and be ready to demo
+- if applicable
 
 ---
 
