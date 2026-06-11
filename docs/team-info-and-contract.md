@@ -29,7 +29,14 @@
 
 **GitHub:** [liamellison02](https://github.com/liamellison02)
 
-[~100-word professional biography]
+Hi!
+
+I'm a third year Math & CS undergraduate at Georgia State University.
+I am currently located in Chicago and interning at a prop trading firm.
+I hold previous engineering internship experience in software, infrastructure, AI, and data science,
+at companies like BlackRock, Norfolk Southern, amongst others.
+My interests include math, agents, game theory, markets and trading.
+
 
 ---
 
@@ -38,7 +45,6 @@
 **GitHub:** [spiderberry] (https://github.com/spiderberry)
 
 Dandre Kennedy is a Computer Science major at Georgia State University with a strong interest in full-stack web development and software engineering. Through academic and personal projects, he has gained experience working with Java, Python, SQL, HTML, and CSS. His project experience includes contributing to the development of an Employee Management System, a multiplayer trivia game, and a simulation game. Dandre thrives in collaborative environments, combining strong technical problem-solving skills with clear communication and teamwork. He is eager to apply his skills in a team setting, continue growing as a software developer, and contribute to the overall success of the project.
-
 ---
 
 ### Kristie Richards
