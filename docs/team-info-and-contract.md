@@ -42,8 +42,8 @@ My interests include math, agents, game theory, markets and trading.
 
 ### D'Andre Kennedy
 
-**GitHub:** [spiderberry] (https://github.com/spiderberry)
-s
+**GitHub:** [spiderberry](https://github.com/spiderberry)
+
 D'Andre Kennedy is a Computer Science major at Georgia State University
 with a strong interest in full-stack web development and software engineering.
 Through academic and personal projects, he has gained experience
@@ -95,8 +95,6 @@ projects. I am always looking for opportunities to expand my skills, take on new
 ---
 
 ## Team Meeting
-
-*[Insert screenshot of team video call or photo of laptops together]*
 
 ![meeting image](images/meeting1.png)
 
@@ -239,4 +237,4 @@ A member is considered non-contributing if they meet ALL of the following:
 ---
 
 *Document completed: 06-10-2026*
-*Submitted by: [TBD]*
+*Submitted by: D'Andre Kennedy*
