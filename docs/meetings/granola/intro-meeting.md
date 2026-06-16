@@ -26,7 +26,7 @@
   1. Install Homebrew
   2. brew install gh (GitHub CLI)
   3. gh auth login
-  4. gh repo clone c4350/[repo]
+  4. gh repo clone csc4350/[repo]
   5. Create branch, commit changes, push, open PR
 - Recommended editor: VS Code (has GitHub Copilot built in) over Eclipse
 
