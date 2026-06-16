@@ -3,6 +3,8 @@
 **Date & Time:** 09 Jun 26 @ 3:30p
 **Attendees:** Liam, Obaid, D'Andre, Kristie
 
+---
+
 ### Team Setup and Contract
 
 - Team name: LOKK (first letter of each member’s name)
