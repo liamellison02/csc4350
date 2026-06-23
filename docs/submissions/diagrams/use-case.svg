@@ -1,0 +1,149 @@
+<svg viewBox="0 0 1080 820" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <symbol id="actor" overflow="visible">
+      <circle cx="0" cy="-28" r="11" fill="#ffffff" stroke="#1e293b" stroke-width="2.2"/>
+      <line x1="0" y1="-17" x2="0" y2="12" stroke="#1e293b" stroke-width="2.2"/>
+      <line x1="-15" y1="-6" x2="15" y2="-6" stroke="#1e293b" stroke-width="2.2"/>
+      <line x1="0" y1="12" x2="-11" y2="32" stroke="#1e293b" stroke-width="2.2"/>
+      <line x1="0" y1="12" x2="11" y2="32" stroke="#1e293b" stroke-width="2.2"/>
+    </symbol>
+    <marker id="tri" markerWidth="16" markerHeight="16" refX="13" refY="6" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L13,6 L0,12 Z" fill="#ffffff" stroke="#1e293b" stroke-width="1.4"/>
+    </marker>
+    <marker id="open" markerWidth="13" markerHeight="12" refX="9" refY="5" orient="auto" markerUnits="userSpaceOnUse">
+      <path d="M0,0 L10,5 L0,10" fill="none" stroke="#ea580c" stroke-width="1.6"/>
+    </marker>
+  </defs>
+
+  <rect x="0" y="0" width="1080" height="820" fill="#ffffff"/>
+
+  <!-- title -->
+  <text x="540" y="34" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">Helmsman - Use Case Diagram</text>
+  <text x="540" y="56" text-anchor="middle" font-size="13" fill="#64748b">OpenTelemetry Collector control plane - Team LOKK (Group 14)</text>
+
+  <!-- system boundary -->
+  <rect x="300" y="72" width="652" height="648" rx="14" fill="#f8fafc" stroke="#475569" stroke-width="2"/>
+  <text x="626" y="96" text-anchor="middle" font-size="15" font-weight="700" fill="#475569">Helmsman System</text>
+
+  <!-- ===================== association lines (drawn first, under shapes) ===================== -->
+  <g stroke="#94a3b8" stroke-width="1.5" fill="none">
+    <!-- Admin -->
+    <line x1="132" y1="150" x2="372" y2="150"/>
+    <line x1="132" y1="150" x2="372" y2="222"/>
+    <!-- Operator -->
+    <line x1="132" y1="362" x2="372" y2="344"/>
+    <line x1="132" y1="362" x2="372" y2="416"/>
+    <line x1="132" y1="362" x2="372" y2="488"/>
+    <line x1="132" y1="362" x2="572" y2="310"/>
+    <line x1="132" y1="362" x2="572" y2="382"/>
+    <line x1="132" y1="362" x2="572" y2="454"/>
+    <!-- Viewer -->
+    <line x1="132" y1="562" x2="372" y2="560"/>
+    <line x1="132" y1="562" x2="372" y2="632"/>
+    <line x1="132" y1="562" x2="372" y2="704"/>
+    <line x1="132" y1="562" x2="572" y2="560"/>
+    <line x1="132" y1="562" x2="572" y2="632"/>
+    <!-- OpAMP Agent -->
+    <line x1="1000" y1="360" x2="930" y2="150"/>
+    <line x1="1000" y1="360" x2="930" y2="240"/>
+    <line x1="1000" y1="360" x2="930" y2="330"/>
+    <line x1="1000" y1="360" x2="930" y2="420"/>
+    <line x1="1000" y1="360" x2="930" y2="510"/>
+  </g>
+
+  <!-- ===================== include relationships (dashed) ===================== -->
+  <g stroke="#ea580c" stroke-width="1.6" stroke-dasharray="5,3" fill="none">
+    <line x1="548" y1="412" x2="596" y2="330" marker-end="url(#open)"/>
+    <line x1="460" y1="464" x2="460" y2="442" marker-end="url(#open)"/>
+  </g>
+  <text x="556" y="372" font-size="10.5" font-style="italic" fill="#ea580c">&#171;include&#187;</text>
+  <text x="468" y="456" font-size="10.5" font-style="italic" fill="#ea580c">&#171;include&#187;</text>
+
+  <!-- ===================== generalization (role inheritance) ===================== -->
+  <g stroke="#1e293b" stroke-width="2" fill="none">
+    <line x1="120" y1="186" x2="120" y2="322" marker-end="url(#tri)"/>
+    <line x1="120" y1="398" x2="120" y2="520" marker-end="url(#tri)"/>
+  </g>
+
+  <!-- ===================== use case ellipses ===================== -->
+  <!-- Admin tier (amber) -->
+  <g>
+    <ellipse cx="460" cy="150" rx="88" ry="24" fill="#fffbeb" stroke="#d97706" stroke-width="1.8"/>
+    <text x="460" y="154" text-anchor="middle" font-size="12.5" fill="#0f172a">Manage Users</text>
+    <ellipse cx="460" cy="222" rx="88" ry="24" fill="#fffbeb" stroke="#d97706" stroke-width="1.8"/>
+    <text x="460" y="226" text-anchor="middle" font-size="12.5" fill="#0f172a">Assign Roles</text>
+  </g>
+
+  <!-- Operator tier (purple) -->
+  <g>
+    <ellipse cx="460" cy="344" rx="88" ry="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+    <text x="460" y="348" text-anchor="middle" font-size="12.5" fill="#0f172a">Edit Configuration</text>
+    <ellipse cx="460" cy="416" rx="88" ry="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+    <text x="460" y="420" text-anchor="middle" font-size="12.5" fill="#0f172a">Push Rollout</text>
+    <ellipse cx="460" cy="488" rx="88" ry="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+    <text x="460" y="492" text-anchor="middle" font-size="12.5" fill="#0f172a">Roll Back Config</text>
+    <ellipse cx="660" cy="310" rx="88" ry="26" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+    <text x="660" y="306" text-anchor="middle" font-size="12.5" fill="#0f172a"><tspan x="660" dy="0">Validate</tspan><tspan x="660" dy="15">Configuration</tspan></text>
+    <ellipse cx="660" cy="382" rx="88" ry="24" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+    <text x="660" y="386" text-anchor="middle" font-size="12.5" fill="#0f172a">Monitor Rollout</text>
+    <ellipse cx="660" cy="454" rx="88" ry="26" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.8"/>
+    <text x="660" y="450" text-anchor="middle" font-size="12.5" fill="#0f172a"><tspan x="660" dy="0">Manage Agent</tspan><tspan x="660" dy="15">Labels</tspan></text>
+  </g>
+
+  <!-- Viewer tier (green) -->
+  <g>
+    <ellipse cx="460" cy="560" rx="88" ry="24" fill="#ecfdf5" stroke="#059669" stroke-width="1.8"/>
+    <text x="460" y="564" text-anchor="middle" font-size="12.5" fill="#0f172a">Log In</text>
+    <ellipse cx="460" cy="632" rx="88" ry="26" fill="#ecfdf5" stroke="#059669" stroke-width="1.8"/>
+    <text x="460" y="628" text-anchor="middle" font-size="12.5" fill="#0f172a"><tspan x="460" dy="0">View Fleet</tspan><tspan x="460" dy="15">Dashboard</tspan></text>
+    <ellipse cx="460" cy="704" rx="88" ry="24" fill="#ecfdf5" stroke="#059669" stroke-width="1.8"/>
+    <text x="460" y="708" text-anchor="middle" font-size="12.5" fill="#0f172a">View Audit Log</text>
+    <ellipse cx="660" cy="560" rx="88" ry="26" fill="#ecfdf5" stroke="#059669" stroke-width="1.8"/>
+    <text x="660" y="556" text-anchor="middle" font-size="12.5" fill="#0f172a"><tspan x="660" dy="0">View Agent</tspan><tspan x="660" dy="15">Details</tspan></text>
+    <ellipse cx="660" cy="632" rx="88" ry="26" fill="#ecfdf5" stroke="#059669" stroke-width="1.8"/>
+    <text x="660" y="628" text-anchor="middle" font-size="12.5" fill="#0f172a"><tspan x="660" dy="0">View Config</tspan><tspan x="660" dy="15">History</tspan></text>
+  </g>
+
+  <!-- Agent tier (blue) -->
+  <g>
+    <ellipse cx="850" cy="150" rx="80" ry="24" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+    <text x="850" y="154" text-anchor="middle" font-size="12.5" fill="#0f172a">Register Agent</text>
+    <ellipse cx="850" cy="240" rx="80" ry="24" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+    <text x="850" y="244" text-anchor="middle" font-size="12.5" fill="#0f172a">Report Health</text>
+    <ellipse cx="850" cy="330" rx="80" ry="26" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+    <text x="850" y="326" text-anchor="middle" font-size="12.5" fill="#0f172a"><tspan x="850" dy="0">Report Effective</tspan><tspan x="850" dy="15">Config</tspan></text>
+    <ellipse cx="850" cy="420" rx="80" ry="24" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+    <text x="850" y="424" text-anchor="middle" font-size="12.5" fill="#0f172a">Receive Config</text>
+    <ellipse cx="850" cy="510" rx="80" ry="26" fill="#eff6ff" stroke="#2563eb" stroke-width="1.8"/>
+    <text x="850" y="506" text-anchor="middle" font-size="12.5" fill="#0f172a"><tspan x="850" dy="0">Report Apply</tspan><tspan x="850" dy="15">Result</tspan></text>
+  </g>
+
+  <!-- ===================== actors ===================== -->
+  <use href="#actor" x="120" y="150"/>
+  <text x="120" y="202" text-anchor="middle" font-size="13" font-weight="600" fill="#b45309">Admin</text>
+  <use href="#actor" x="120" y="362"/>
+  <text x="120" y="414" text-anchor="middle" font-size="13" font-weight="600" fill="#6d28d9">Operator</text>
+  <use href="#actor" x="120" y="562"/>
+  <text x="120" y="614" text-anchor="middle" font-size="13" font-weight="600" fill="#047857">Viewer</text>
+
+  <use href="#actor" x="1012" y="360"/>
+  <text x="1012" y="412" text-anchor="middle" font-size="12.5" font-weight="600" fill="#1d4ed8">OTel Collector</text>
+  <text x="1012" y="428" text-anchor="middle" font-size="11" fill="#1d4ed8">(OpAMP Agent)</text>
+
+  <!-- ===================== legend ===================== -->
+  <rect x="300" y="742" width="652" height="62" rx="8" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <g font-size="11" fill="#334155">
+    <rect x="312" y="756" width="14" height="14" rx="3" fill="#ecfdf5" stroke="#059669"/>
+    <text x="332" y="767">Viewer - read-only</text>
+    <rect x="452" y="756" width="14" height="14" rx="3" fill="#f5f3ff" stroke="#7c3aed"/>
+    <text x="472" y="767">Operator - deploy &amp; rollback</text>
+    <rect x="652" y="756" width="14" height="14" rx="3" fill="#fffbeb" stroke="#d97706"/>
+    <text x="672" y="767">Admin - user / role governance</text>
+    <rect x="312" y="780" width="14" height="14" rx="3" fill="#eff6ff" stroke="#2563eb"/>
+    <text x="332" y="791">OpAMP Agent - system actor</text>
+    <line x1="454" y1="787" x2="486" y2="787" stroke="#1e293b" stroke-width="2" marker-end="url(#tri)"/>
+    <text x="494" y="791">generalization (role inheritance)</text>
+    <line x1="724" y1="787" x2="756" y2="787" stroke="#ea580c" stroke-width="1.6" stroke-dasharray="5,3" marker-end="url(#open)"/>
+    <text x="764" y="791" font-style="italic">&#171;include&#187;</text>
+  </g>
+</svg>
