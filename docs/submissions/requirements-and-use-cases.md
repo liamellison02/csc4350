@@ -181,60 +181,51 @@ to a test.
 
 ### 6.1 Usability
 
-- **NFR-1.1** The web UI shall present a consistent layout and navigation across all pages.
-- **NFR-1.2** A user shall be able to roll back a configuration in no more than three clicks from the agent or configuration view.
-- **NFR-1.3** The UI shall surface validation errors and rollout failures with clear, actionable messages.
-- **NFR-1.4** The UI shall be usable on standard desktop resolutions of 1280px width and above.
+- **NFR-1.1** The web UI shall present a consistent layout and navigation optimized for standard desktop resolutions of 1280px and wider.
+- **NFR-1.2** Users shall be able to roll back a configuration in no more than three clicks from the agent or configuration view.
+- **NFR-1.3** The UI shall display clear, actionable validation and rollout error messages.
 
 ### 6.2 Reliability and Availability
 
-- **NFR-2.1** The control plane shall target 99.5% availability during operation.
-- **NFR-2.2** The system shall reconnect to and re-synchronize agents automatically after a control-plane restart.
-- **NFR-2.3** The system shall converge each agent to its desired configuration through repeated reconciliation rather than a single best-effort push.
-- **NFR-2.4** No configuration change shall be lost on service restart; all desired state shall persist in the database.
+- **NFR-2.1** Persist all configurations in the database to prevent data loss, and automatically resynchronize agents after a restart.
+- **NFR-2.2** Maintain desired agent state through continuous reconcilation.
 
 ### 6.3 Performance
 
-- **NFR-3.1** The fleet dashboard shall load within 2 seconds for fleets of up to 500 agents.
-- **NFR-3.2** The system shall begin pushing a configuration to matching connected agents within 5 seconds of an operator confirming a rollout.
-- **NFR-3.3** The control plane shall sustain concurrent OpAMP connections for at least 500 agents on a single host.
+- **NFR-3.1** Begin pushing configurations within 20 seconds of a confirmed rollout.
+- **NFR-3.2** The control plane shall support at least 50 concurrent OpAMP connections on a single host.
 
 ### 6.4 Scalability
 
-- **NFR-4.1** The architecture shall scale horizontally by adding agent control-plane instances that coordinate through the shared database.
-- **NFR-4.2** The data model shall support growth to thousands of agents and configuration versions without schema change.
+- **NFR-4.1** Scale horizontally via a shared database to support thousands of agents and configurations without requiring schema changes.
 
 ### 6.5 Security
 
-- **NFR-5.1** All client, API, and OpAMP traffic shall be encrypted in transit with TLS.
-- **NFR-5.2** User passwords shall be stored only as salted hashes and shall never be returned by any API.
-- **NFR-5.3** The system shall enforce role-based authorization on the server, not only in the UI.
-- **NFR-5.4** Audit records shall be append-only and tamper-evident.
-- **NFR-5.5** Secrets and credentials shall never be committed to source control or written to logs.
+- **NFR-5.1** Encrypt all client, API, and OpAMP traffic using TLS.
+- **NFR-5.2** Store passwords as salted hashes and strictly exclude all secrets/credentiasl from APIs, source control, and system logs.
+- **NFR-5.3** Enforce role-based access control on the server side.
+- **NFR-5.4** Maintain append-only, tamper-evident audit logs.
 
 ### 6.6 Maintainability and Supportability
 
-- **NFR-6.1** The system shall be fully open source under a permissive license with no feature gates.
+- **NFR-6.1** Maintain fully open-source code under a permissive license with no feature gates.
 - **NFR-6.2** Source code shall be maintained in Git with feature branches and required peer review before merge to main.
 - **NFR-6.3** The management API shall expose auto-generated, browsable API documentation.
-- **NFR-6.4** The system shall emit structured logs for key operations to support troubleshooting.
+- **NFR-6.4** Emit structured logs to support troubleshooting.
 
 ### 6.7 Portability and Deployment
 
-- **NFR-7.1** The system shall run on a single host via container images orchestrated with Docker Compose.
-- **NFR-7.2** The system shall run without dependency on any proprietary or hosted third-party service.
+- **NFR-7.1** Deploy via Docker Compose on a single host without any proprietary or external hosted dependencies.
 
 ### 6.8 Design Constraints
 
-- **NFR-8.1** The system shall manage agents using the open OpAMP protocol and shall not require a proprietary forked agent.
-- **NFR-8.2** The system shall target the OpenTelemetry Collector as the managed agent.
-- **NFR-8.3** The implementation shall use the agreed stack: React, FastAPI, Go (opamp-go), and PostgreSQL.
+- **NFR-8.1** Target the OpenTelemetry Collector as the managed agent using the standard OpAMP protocol (no proprietary forks).
+- **NFR-8.2** Implement the system using React, FastAPI, Go (opamp-go), and PostgreSQL.
 
 ### 6.9 External Interfaces
 
-- **NFR-9.1** The system shall provide a browser-based user interface as the primary human interface.
-- **NFR-9.2** The system shall provide a documented REST and JSON API for all management operations.
-- **NFR-9.3** The system shall communicate with agents over the OpAMP WebSocket interface.
+- **NFR-9.1** Provide a browser-based UI as the primary human interface and a documented REST and JSON API for all management operations.
+- **NFR-9.2** Communicate with agents over the OpAMP WebSocket interface.
 
 ---
 
