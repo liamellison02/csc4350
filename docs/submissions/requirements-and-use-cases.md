@@ -341,9 +341,6 @@ erDiagram
 
 ## 8. Contributions
 
-> Placeholder for the per-assignment contribution statement required by the
-> syllabus. Confirm and edit before submitting.
-
 - **Use Case Diagram:** Kristie Richards, D'Andre Kennedy
 - **Functional and Non-Functional Requirements:** Liam Ellison
 - **Architecture and Technology Stack:** Liam Ellison
