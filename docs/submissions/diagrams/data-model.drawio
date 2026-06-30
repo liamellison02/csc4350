@@ -1,0 +1,46 @@
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="helmsman-data-model" name="Data Model">
+    <mxGraphModel dx="1240" dy="900" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1240" pageHeight="900" math="0" shadow="0">
+      <root>
+        <mxCell id="0"/>
+        <mxCell id="1" parent="0"/>
+        <mxCell id="users" value="&lt;b&gt;USERS&lt;/b&gt;&lt;br/&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;br/&gt;&lt;i&gt;PK&lt;/i&gt; &lt;u&gt;id : int&lt;/u&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; email : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; password_hash : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; role : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; is_active : boolean&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; created_at : timestamp" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;spacingTop=2;fillColor=#ffffff;strokeColor=#475569;fontColor=#0f172a;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="110" width="224" height="148" as="geometry"/>
+        </mxCell>
+        <mxCell id="configurations" value="&lt;b&gt;CONFIGURATIONS&lt;/b&gt;&lt;br/&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;br/&gt;&lt;i&gt;PK&lt;/i&gt; &lt;u&gt;id : int&lt;/u&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; name : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; label_selector : varchar&lt;br/&gt;&lt;i&gt;FK&lt;/i&gt; &lt;i&gt;current_version_id : int&lt;/i&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;spacingTop=2;fillColor=#ffffff;strokeColor=#475569;fontColor=#0f172a;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="478" y="78" width="234" height="110" as="geometry"/>
+        </mxCell>
+        <mxCell id="agents" value="&lt;b&gt;AGENTS&lt;/b&gt;&lt;br/&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;br/&gt;&lt;i&gt;PK&lt;/i&gt; &lt;u&gt;instance_uid : varchar&lt;/u&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; hostname : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; labels : json&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; agent_type : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; version : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; status : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; last_seen : timestamp&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; effective_config_hash : varchar" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;spacingTop=2;fillColor=#ffffff;strokeColor=#475569;fontColor=#0f172a;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="946" y="96" width="264" height="186" as="geometry"/>
+        </mxCell>
+        <mxCell id="config_versions" value="&lt;b&gt;CONFIG_VERSIONS&lt;/b&gt;&lt;br/&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;br/&gt;&lt;i&gt;PK&lt;/i&gt; &lt;u&gt;id : int&lt;/u&gt;&lt;br/&gt;&lt;i&gt;FK&lt;/i&gt; &lt;i&gt;configuration_id : int&lt;/i&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; version_no : int&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; yaml : text&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; hash : varchar&lt;br/&gt;&lt;i&gt;FK&lt;/i&gt; &lt;i&gt;author_id : int&lt;/i&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; created_at : timestamp" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;spacingTop=2;fillColor=#ffffff;strokeColor=#475569;fontColor=#0f172a;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="478" y="384" width="234" height="167" as="geometry"/>
+        </mxCell>
+        <mxCell id="rollouts" value="&lt;b&gt;ROLLOUTS&lt;/b&gt;&lt;br/&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;br/&gt;&lt;i&gt;PK&lt;/i&gt; &lt;u&gt;id : int&lt;/u&gt;&lt;br/&gt;&lt;i&gt;FK&lt;/i&gt; &lt;i&gt;config_version_id : int&lt;/i&gt;&lt;br/&gt;&lt;i&gt;FK&lt;/i&gt; &lt;i&gt;agent_instance_uid : varchar&lt;/i&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; status : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; applied_at : timestamp&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; error : varchar" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;spacingTop=2;fillColor=#ffffff;strokeColor=#475569;fontColor=#0f172a;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="902" y="560" width="264" height="148" as="geometry"/>
+        </mxCell>
+        <mxCell id="audit_logs" value="&lt;b&gt;AUDIT_LOGS&lt;/b&gt;&lt;br/&gt;&lt;hr size=&quot;1&quot;/&gt;&lt;br/&gt;&lt;i&gt;PK&lt;/i&gt; &lt;u&gt;id : int&lt;/u&gt;&lt;br/&gt;&lt;i&gt;FK&lt;/i&gt; &lt;i&gt;user_id : int&lt;/i&gt;&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; action : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; target_type : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; target_id : varchar&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; detail : text&lt;br/&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp; created_at : timestamp" style="rounded=1;whiteSpace=wrap;html=1;align=left;verticalAlign=top;spacing=8;spacingTop=2;fillColor=#ffffff;strokeColor=#475569;fontColor=#0f172a;fontSize=12;" vertex="1" parent="1">
+          <mxGeometry x="50" y="560" width="240" height="167" as="geometry"/>
+        </mxCell>
+        <mxCell id="e0" value="authors" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#475569;fontColor=#0f172a;fontStyle=2;" edge="1" parent="1" source="users" target="config_versions">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e1" value="generates" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERzeroToOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#475569;fontColor=#0f172a;fontStyle=2;" edge="1" parent="1" source="users" target="audit_logs">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e2" value="has history" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#475569;fontColor=#0f172a;fontStyle=2;" edge="1" parent="1" source="configurations" target="config_versions">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e3" value="current is" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToOne;endFill=0;strokeColor=#475569;fontColor=#0f172a;fontStyle=2;" edge="1" parent="1" source="configurations" target="config_versions">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e4" value="deployed via" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#475569;fontColor=#0f172a;fontStyle=2;" edge="1" parent="1" source="config_versions" target="rollouts">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+        <mxCell id="e5" value="targeted by" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;startArrow=ERmandOne;startFill=0;endArrow=ERzeroToMany;endFill=0;strokeColor=#475569;fontColor=#0f172a;fontStyle=2;" edge="1" parent="1" source="agents" target="rollouts">
+          <mxGeometry relative="1" as="geometry"/>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
