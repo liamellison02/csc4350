@@ -1,0 +1,153 @@
+<svg viewBox="0 0 1240 900" xmlns="http://www.w3.org/2000/svg" font-family="Helvetica, Arial, sans-serif">
+  <defs>
+    <marker id="one" markerWidth="24" markerHeight="24" refX="22" refY="12"
+            orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <line x1="12" y1="4" x2="12" y2="20" stroke="#475569" stroke-width="1.7"/>
+      <line x1="18" y1="4" x2="18" y2="20" stroke="#475569" stroke-width="1.7"/>
+    </marker>
+    <marker id="zone" markerWidth="34" markerHeight="24" refX="30" refY="12"
+            orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <circle cx="11" cy="12" r="6" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+      <line x1="24" y1="4" x2="24" y2="20" stroke="#475569" stroke-width="1.7"/>
+    </marker>
+    <marker id="zmany" markerWidth="40" markerHeight="26" refX="36" refY="13"
+            orient="auto-start-reverse" markerUnits="userSpaceOnUse">
+      <circle cx="9" cy="13" r="6" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+      <line x1="19" y1="13" x2="36" y2="4" stroke="#475569" stroke-width="1.7"/>
+      <line x1="19" y1="13" x2="36" y2="13" stroke="#475569" stroke-width="1.7"/>
+      <line x1="19" y1="13" x2="36" y2="22" stroke="#475569" stroke-width="1.7"/>
+    </marker>
+  </defs>
+  <rect x="0" y="0" width="1240" height="900" fill="#ffffff"/>
+  <text x="620" y="36" text-anchor="middle" font-size="22" font-weight="700" fill="#0f172a">Helmsman - Data Model (Entity-Relationship Diagram)</text>
+  <text x="620" y="58" text-anchor="middle" font-size="13" fill="#64748b">PostgreSQL schema - Team LOKK (Group 14)</text>
+  <g>
+    <path d="M274,200 L376,200 L376,432 L478,432" fill="none" stroke="#475569" stroke-width="1.7" marker-start="url(#one)" marker-end="url(#zmany)"/>
+    <rect x="295" y="180" width="55" height="17" rx="3" fill="#ffffff" opacity="0.92"/>
+    <text x="300" y="192" font-size="11.5" font-style="italic" fill="#0f172a">authors</text>
+    <path d="M120,224 L120,560" fill="none" stroke="#475569" stroke-width="1.7" marker-start="url(#zone)" marker-end="url(#zmany)"/>
+    <rect x="123" y="393" width="68" height="17" rx="3" fill="#ffffff" opacity="0.92"/>
+    <text x="128" y="405" font-size="11.5" font-style="italic" fill="#0f172a">generates</text>
+    <path d="M556,162 L556,384" fill="none" stroke="#475569" stroke-width="1.7" marker-start="url(#one)" marker-end="url(#zmany)"/>
+    <rect x="425" y="258" width="80" height="17" rx="3" fill="#ffffff" opacity="0.92"/>
+    <text x="430" y="270" font-size="11.5" font-style="italic" fill="#0f172a">has history</text>
+    <path d="M636,162 L636,384" fill="none" stroke="#475569" stroke-width="1.7" marker-start="url(#one)" marker-end="url(#zone)"/>
+    <rect x="641" y="288" width="74" height="17" rx="3" fill="#ffffff" opacity="0.92"/>
+    <text x="646" y="300" font-size="11.5" font-style="italic" fill="#0f172a">current is</text>
+    <path d="M712,470 L810,470 L810,604 L902,604" fill="none" stroke="#475569" stroke-width="1.7" marker-start="url(#one)" marker-end="url(#zmany)"/>
+    <rect x="755" y="450" width="87" height="17" rx="3" fill="#ffffff" opacity="0.92"/>
+    <text x="760" y="462" font-size="11.5" font-style="italic" fill="#0f172a">deployed via</text>
+    <path d="M1066,270 L1066,560" fill="none" stroke="#475569" stroke-width="1.7" marker-start="url(#one)" marker-end="url(#zmany)"/>
+    <rect x="1069" y="398" width="80" height="17" rx="3" fill="#ffffff" opacity="0.92"/>
+    <text x="1074" y="410" font-size="11.5" font-style="italic" fill="#0f172a">targeted by</text>
+  </g>
+  <g>
+    <rect x="50" y="110" width="224" height="140" rx="7" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+    <path d="M50,136 L50,117 Q50,110 57,110 L267,110 Q274,110 274,117 L274,136 Z" fill="#334155"/>
+    <text x="162" y="127" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="0.4">USERS</text>
+    <text x="60" y="150" font-size="9.5" font-weight="700" fill="#64748b">PK</text>
+    <text x="88" y="150" font-size="12" font-weight="700" text-decoration="underline" fill="#0f172a">id : int</text>
+    <rect x="52" y="155" width="221" height="19" fill="#f8fafc"/>
+    <text x="88" y="169" font-size="12" font-weight="400" fill="#0f172a">email : varchar</text>
+    <text x="88" y="188" font-size="12" font-weight="400" fill="#0f172a">password_hash : varchar</text>
+    <rect x="52" y="193" width="221" height="19" fill="#f8fafc"/>
+    <text x="88" y="207" font-size="12" font-weight="400" fill="#0f172a">role : varchar</text>
+    <text x="88" y="226" font-size="12" font-weight="400" fill="#0f172a">is_active : boolean</text>
+    <rect x="52" y="231" width="221" height="19" fill="#f8fafc"/>
+    <text x="88" y="245" font-size="12" font-weight="400" fill="#0f172a">created_at : timestamp</text>
+  </g>
+  <g>
+    <rect x="478" y="78" width="234" height="102" rx="7" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+    <path d="M478,104 L478,85 Q478,78 485,78 L705,78 Q712,78 712,85 L712,104 Z" fill="#334155"/>
+    <text x="595" y="95" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="0.4">CONFIGURATIONS</text>
+    <text x="488" y="118" font-size="9.5" font-weight="700" fill="#64748b">PK</text>
+    <text x="516" y="118" font-size="12" font-weight="700" text-decoration="underline" fill="#0f172a">id : int</text>
+    <rect x="480" y="123" width="231" height="19" fill="#f8fafc"/>
+    <text x="516" y="137" font-size="12" font-weight="400" fill="#0f172a">name : varchar</text>
+    <text x="516" y="156" font-size="12" font-weight="400" fill="#0f172a">label_selector : varchar</text>
+    <rect x="480" y="161" width="231" height="19" fill="#f8fafc"/>
+    <text x="488" y="175" font-size="9.5" font-weight="700" fill="#64748b">FK</text>
+    <text x="516" y="175" font-size="12" font-weight="400" font-style="italic" fill="#0f172a">current_version_id : int</text>
+  </g>
+  <g>
+    <rect x="946" y="96" width="264" height="178" rx="7" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+    <path d="M946,122 L946,103 Q946,96 953,96 L1203,96 Q1210,96 1210,103 L1210,122 Z" fill="#334155"/>
+    <text x="1078" y="113" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="0.4">AGENTS</text>
+    <text x="956" y="136" font-size="9.5" font-weight="700" fill="#64748b">PK</text>
+    <text x="984" y="136" font-size="12" font-weight="700" text-decoration="underline" fill="#0f172a">instance_uid : varchar</text>
+    <rect x="948" y="141" width="261" height="19" fill="#f8fafc"/>
+    <text x="984" y="155" font-size="12" font-weight="400" fill="#0f172a">hostname : varchar</text>
+    <text x="984" y="174" font-size="12" font-weight="400" fill="#0f172a">labels : json</text>
+    <rect x="948" y="179" width="261" height="19" fill="#f8fafc"/>
+    <text x="984" y="193" font-size="12" font-weight="400" fill="#0f172a">agent_type : varchar</text>
+    <text x="984" y="212" font-size="12" font-weight="400" fill="#0f172a">version : varchar</text>
+    <rect x="948" y="217" width="261" height="19" fill="#f8fafc"/>
+    <text x="984" y="231" font-size="12" font-weight="400" fill="#0f172a">status : varchar</text>
+    <text x="984" y="250" font-size="12" font-weight="400" fill="#0f172a">last_seen : timestamp</text>
+    <rect x="948" y="255" width="261" height="19" fill="#f8fafc"/>
+    <text x="984" y="269" font-size="12" font-weight="400" fill="#0f172a">effective_config_hash : varchar</text>
+  </g>
+  <g>
+    <rect x="478" y="384" width="234" height="159" rx="7" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+    <path d="M478,410 L478,391 Q478,384 485,384 L705,384 Q712,384 712,391 L712,410 Z" fill="#334155"/>
+    <text x="595" y="401" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="0.4">CONFIG_VERSIONS</text>
+    <text x="488" y="424" font-size="9.5" font-weight="700" fill="#64748b">PK</text>
+    <text x="516" y="424" font-size="12" font-weight="700" text-decoration="underline" fill="#0f172a">id : int</text>
+    <rect x="480" y="429" width="231" height="19" fill="#f8fafc"/>
+    <text x="488" y="443" font-size="9.5" font-weight="700" fill="#64748b">FK</text>
+    <text x="516" y="443" font-size="12" font-weight="400" font-style="italic" fill="#0f172a">configuration_id : int</text>
+    <text x="516" y="462" font-size="12" font-weight="400" fill="#0f172a">version_no : int</text>
+    <rect x="480" y="467" width="231" height="19" fill="#f8fafc"/>
+    <text x="516" y="481" font-size="12" font-weight="400" fill="#0f172a">yaml : text</text>
+    <text x="516" y="500" font-size="12" font-weight="400" fill="#0f172a">hash : varchar</text>
+    <rect x="480" y="505" width="231" height="19" fill="#f8fafc"/>
+    <text x="488" y="519" font-size="9.5" font-weight="700" fill="#64748b">FK</text>
+    <text x="516" y="519" font-size="12" font-weight="400" font-style="italic" fill="#0f172a">author_id : int</text>
+    <text x="516" y="538" font-size="12" font-weight="400" fill="#0f172a">created_at : timestamp</text>
+  </g>
+  <g>
+    <rect x="902" y="560" width="264" height="140" rx="7" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+    <path d="M902,586 L902,567 Q902,560 909,560 L1159,560 Q1166,560 1166,567 L1166,586 Z" fill="#334155"/>
+    <text x="1034" y="577" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="0.4">ROLLOUTS</text>
+    <text x="912" y="600" font-size="9.5" font-weight="700" fill="#64748b">PK</text>
+    <text x="940" y="600" font-size="12" font-weight="700" text-decoration="underline" fill="#0f172a">id : int</text>
+    <rect x="904" y="605" width="261" height="19" fill="#f8fafc"/>
+    <text x="912" y="619" font-size="9.5" font-weight="700" fill="#64748b">FK</text>
+    <text x="940" y="619" font-size="12" font-weight="400" font-style="italic" fill="#0f172a">config_version_id : int</text>
+    <text x="912" y="638" font-size="9.5" font-weight="700" fill="#64748b">FK</text>
+    <text x="940" y="638" font-size="12" font-weight="400" font-style="italic" fill="#0f172a">agent_instance_uid : varchar</text>
+    <rect x="904" y="643" width="261" height="19" fill="#f8fafc"/>
+    <text x="940" y="657" font-size="12" font-weight="400" fill="#0f172a">status : varchar</text>
+    <text x="940" y="676" font-size="12" font-weight="400" fill="#0f172a">applied_at : timestamp</text>
+    <rect x="904" y="681" width="261" height="19" fill="#f8fafc"/>
+    <text x="940" y="695" font-size="12" font-weight="400" fill="#0f172a">error : varchar</text>
+  </g>
+  <g>
+    <rect x="50" y="560" width="240" height="159" rx="7" fill="#ffffff" stroke="#475569" stroke-width="1.6"/>
+    <path d="M50,586 L50,567 Q50,560 57,560 L283,560 Q290,560 290,567 L290,586 Z" fill="#334155"/>
+    <text x="170" y="577" text-anchor="middle" font-size="13" font-weight="700" fill="#ffffff" letter-spacing="0.4">AUDIT_LOGS</text>
+    <text x="60" y="600" font-size="9.5" font-weight="700" fill="#64748b">PK</text>
+    <text x="88" y="600" font-size="12" font-weight="700" text-decoration="underline" fill="#0f172a">id : int</text>
+    <rect x="52" y="605" width="237" height="19" fill="#f8fafc"/>
+    <text x="60" y="619" font-size="9.5" font-weight="700" fill="#64748b">FK</text>
+    <text x="88" y="619" font-size="12" font-weight="400" font-style="italic" fill="#0f172a">user_id : int</text>
+    <text x="88" y="638" font-size="12" font-weight="400" fill="#0f172a">action : varchar</text>
+    <rect x="52" y="643" width="237" height="19" fill="#f8fafc"/>
+    <text x="88" y="657" font-size="12" font-weight="400" fill="#0f172a">target_type : varchar</text>
+    <text x="88" y="676" font-size="12" font-weight="400" fill="#0f172a">target_id : varchar</text>
+    <rect x="52" y="681" width="237" height="19" fill="#f8fafc"/>
+    <text x="88" y="695" font-size="12" font-weight="400" fill="#0f172a">detail : text</text>
+    <text x="88" y="714" font-size="12" font-weight="400" fill="#0f172a">created_at : timestamp</text>
+  </g>
+  <rect x="50" y="742" width="1160" height="138" rx="9" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1"/>
+  <text x="68" y="766" font-size="13" font-weight="700" fill="#334155">Legend - crow&#8217;s foot cardinality</text>
+  <line x1="90" y1="794" x2="136" y2="794" stroke="#475569" stroke-width="1.7" marker-end="url(#one)"/>
+  <text x="182" y="798" font-size="11.5" fill="#334155">exactly one (mandatory)</text>
+  <line x1="370" y1="794" x2="416" y2="794" stroke="#475569" stroke-width="1.7" marker-end="url(#zone)"/>
+  <text x="462" y="798" font-size="11.5" fill="#334155">zero or one (optional)</text>
+  <line x1="650" y1="794" x2="696" y2="794" stroke="#475569" stroke-width="1.7" marker-end="url(#zmany)"/>
+  <text x="742" y="798" font-size="11.5" fill="#334155">zero or many</text>
+  <text x="68" y="828" font-size="11" fill="#475569">&#8226; ROLLOUTS is an associative (junction) entity that resolves the many-to-many between CONFIG_VERSIONS and AGENTS, carrying its own status / applied_at / error per push.</text>
+  <text x="68" y="845" font-size="11" fill="#475569">&#8226; Two lines join CONFIGURATIONS and CONFIG_VERSIONS: “has history” is the one-to-many version log; “current is” is the one-to-one pointer to the active version.</text>
+  <text x="68" y="862" font-size="11" fill="#475569">&#8226; Configuration-to-agent targeting is a second, conceptual many-to-many resolved dynamically at rollout time via label_selector / labels (no stored join table).</text>
+</svg>

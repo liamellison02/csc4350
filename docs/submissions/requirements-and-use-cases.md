@@ -277,21 +277,27 @@ flowchart LR
 
 ### 7.3 Data Model
 
-PostgreSQL is the single source of truth. Six core entities satisfy the database
-requirement and back the use cases above.
+PostgreSQL is the single source of truth. Six core entities satisfy the
+database requirement and back every use case above. The full cardinality
+walkthrough, a rendered crow's-foot diagram, and the editable source live in the
+dedicated data-model submission, [data-model.md](data-model.md).
 
 ```mermaid
 erDiagram
-  USERS ||--o{ CONFIG_VERSIONS : authors
-  USERS ||--o{ AUDIT_LOGS : generates
-  CONFIGURATIONS ||--o{ CONFIG_VERSIONS : has
+  USERS ||--o{ CONFIG_VERSIONS : "authors"
+  USERS |o--o{ AUDIT_LOGS : "generates"
+  CONFIGURATIONS ||--o{ CONFIG_VERSIONS : "has history"
+  CONFIGURATIONS ||--o| CONFIG_VERSIONS : "current is"
   CONFIG_VERSIONS ||--o{ ROLLOUTS : "deployed via"
   AGENTS ||--o{ ROLLOUTS : "targeted by"
 
   USERS {
     int id PK
     string email
+    string password_hash
     string role "admin | operator | viewer"
+    boolean is_active
+    timestamp created_at
   }
   AGENTS {
     string instance_uid PK
@@ -299,7 +305,7 @@ erDiagram
     json labels
     string agent_type
     string version
-    string status
+    string status "healthy | degraded | disconnected"
     timestamp last_seen
     string effective_config_hash
   }
@@ -307,7 +313,7 @@ erDiagram
     int id PK
     string name
     string label_selector
-    int current_version_id FK
+    int current_version_id FK "nullable"
   }
   CONFIG_VERSIONS {
     int id PK
@@ -321,14 +327,14 @@ erDiagram
   ROLLOUTS {
     int id PK
     int config_version_id FK
-    string agent_id FK
-    string status
+    string agent_instance_uid FK
+    string status "pending | applied | failed"
     timestamp applied_at
     string error
   }
   AUDIT_LOGS {
     int id PK
-    int user_id FK
+    int user_id FK "nullable"
     string action
     string target_type
     string target_id
@@ -336,6 +342,21 @@ erDiagram
     timestamp created_at
   }
 ```
+
+**Cardinality notation (crow's foot).** A bar means "exactly one," a circle
+means "zero" (optional), and a crow's foot means "many." So `||--o{` reads as
+"one mandatory parent to zero-or-many children," and `||--o|` is a one-to-one.
+
+**The many-to-many.** One config version is deployed to many agents, and one
+agent receives many config versions over time. `ROLLOUTS` is the associative
+(junction) entity that resolves that many-to-many, and it carries its own
+attributes (`status`, `applied_at`, `error`) for each version-to-agent push.
+Which agents a configuration targets is a second, conceptual many-to-many that
+is resolved dynamically at rollout time through `label_selector` and agent
+`labels`, so it needs no stored join table. The two lines between
+`CONFIGURATIONS` and `CONFIG_VERSIONS` are distinct: "has history" is the
+one-to-many version history, and "current is" is the one-to-one pointer to the
+active version (null until the first save).
 
 ---
 
