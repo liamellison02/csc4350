@@ -87,13 +87,13 @@ flowchart TD
     start(["Operator opens the config editor"]) --> edit["Edit configuration body in React SPA (FR-3.2)"]
     edit --> submit["Submit to FastAPI to validate and save (FR-3.3)"]
     submit --> valid{"Syntax and schema valid?"}
-    valid -->|No| err["Return 422 with validation errors; nothing saved (FR-3.4)"]
+    valid -->|No| err["Return 422 with validation errors, nothing saved (FR-3.4)"]
     err --> stop1(["End: configuration rejected"])
     valid -->|Yes| version["Write immutable config_versions row with author and hash (FR-4.1, FR-4.2)"]
     version --> confirm["Operator confirms push"]
     confirm --> fanout["Create pending rollouts rows for agents matching label_selector (FR-5.1)"]
     fanout --> reconcile{"Desired hash differs from agent effective hash? (FR-5.2)"}
-    reconcile -->|No| noop["Leave rollouts row unchanged; no push"]
+    reconcile -->|No| noop["Leave rollouts row unchanged, no push"]
     reconcile -->|Yes| connected{"Agent connected? (FR-8.4)"}
     connected -->|No| pend["Keep rollouts row pending until reconnect (FR-8.4)"]
     connected -->|Yes| push["Send remote config over OpAMP WebSocket (FR-5.3)"]
@@ -125,7 +125,7 @@ sequenceDiagram
     API->>API: Validate syntax and schema (FR-3.3)
     alt Validation fails (FR-3.4)
         API-->>UI: 422 with validation errors
-        UI-->>OP: Show errors; nothing saved
+        UI-->>OP: Show errors, nothing saved
     else Validation passes
         API->>DB: INSERT config_versions with author and hash
         Note over API,DB: New immutable version (FR-4.1, FR-4.2)
@@ -214,8 +214,8 @@ flowchart TD
     diff -->|No| noop["Reconciler no-ops for that agent (FR-5.2)"]
     diff -->|Yes| push["Push prior version over OpAMP (FR-5.3)"]
     push --> applied{"Apply succeeded? (FR-8.3)"}
-    applied -->|No| fail["Mark rollouts failed; agent keeps previous config (FR-5.4)"]
-    applied -->|Yes| ok["Mark rollouts applied; update effective hash (FR-5.4)"]
+    applied -->|No| fail["Mark rollouts failed, agent keeps previous config (FR-5.4)"]
+    applied -->|Yes| ok["Mark rollouts applied, update effective hash (FR-5.4)"]
     noop --> progress
     fail --> progress
     ok --> progress["Show live per-agent progress (FR-5.5)"]
@@ -255,11 +255,11 @@ sequenceDiagram
         alt Apply succeeded
             CP->>DB: UPDATE rollouts applied and effective hash (FR-5.4)
         else Apply failed
-            CP->>DB: UPDATE rollouts failed; prior config keeps running (FR-5.4)
+            CP->>DB: UPDATE rollouts failed, prior config keeps running (FR-5.4)
         end
     end
     opt Selected version already running
-        Note over CP,COL: Hashes equal; reconciler no-ops (FR-5.2)
+        Note over CP,COL: Hashes equal, reconciler no-ops (FR-5.2)
     end
     UI->>API: Poll rollout progress (FR-5.5)
     API-->>UI: Per-agent progress
@@ -310,11 +310,11 @@ config while the rest of the fleet proceeds (FR-5.4).
 flowchart TD
     start(["Collector starts and dials the control plane"]) --> open["Open OpAMP WebSocket with credentials (FR-2.1)"]
     open --> creds{"Credentials valid? (FR-2.1)"}
-    creds -->|No| reject["Reject connection; no agents row created"]
+    creds -->|No| reject["Reject connection, no agents row created"]
     reject --> stop1(["End: registration refused"])
     creds -->|Yes| accept["Establish persistent connection (FR-8.1)"]
     accept --> desc["Collector sends AgentDescription (FR-2.2)"]
-    desc --> upsert["Upsert agents row; set last_seen (FR-2.2)"]
+    desc --> upsert["Upsert agents row, set last_seen (FR-2.2)"]
     upsert --> report["Collector reports health, status, effective config (FR-8.2)"]
     report --> update["Update status, last_seen, effective_config_hash (FR-2.5)"]
     update --> dash["Fleet dashboard reflects near real time state (FR-2.3)"]
@@ -342,9 +342,9 @@ sequenceDiagram
     alt Invalid credentials (FR-2.1)
         CP-->>COL: Reject connection
     else Valid credentials
-        CP-->>COL: Accept; connection established (FR-8.1)
+        CP-->>COL: Accept, connection established (FR-8.1)
         COL->>CP: AgentDescription (uid, hostname, labels, type, version)
-        CP->>DB: UPSERT agents; set last_seen (FR-2.2)
+        CP->>DB: UPSERT agents, set last_seen (FR-2.2)
         Note over CP,DB: agents row created or updated
         loop While connection is open (FR-8.2)
             COL->>CP: Report health, status, effective config
