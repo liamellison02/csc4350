@@ -2,3 +2,18 @@
 
 Sprint-Report.docx
 
+# python
+.venv/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+
+# node
+node_modules/
+dist/
+
+# go
+control-plane/bin/
+
+# env + secrets
+.env

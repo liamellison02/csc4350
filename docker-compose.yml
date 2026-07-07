@@ -1,0 +1,40 @@
+# helmsman dev stack
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: helmsman
+      POSTGRES_USER: helmsman
+      POSTGRES_PASSWORD: helmsman
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
+      - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U helmsman -d helmsman"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build: ./api
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+psycopg://helmsman:helmsman@db:5432/helmsman
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # go opamp control plane lands in sprint 3
+  # control-plane:
+  #   build: ./control-plane
+  #   ports:
+  #     - "4320:4320"
+  #   environment:
+  #     DATABASE_URL: postgres://helmsman:helmsman@db:5432/helmsman
+  #     OPAMP_LISTEN: ":4320"
+  #   depends_on:
+  #     db:
+  #       condition: service_healthy
