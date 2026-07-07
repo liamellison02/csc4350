@@ -209,17 +209,6 @@ Every entity traces back to functional requirements in the prior submission:
 
 ---
 
-## 9. Submission Notes
-
-This assignment is submitted individually, and every team member may submit the
-same data model. Two artifacts go in:
-
-1. This ERD (the rendered diagram and this document).
-2. Each member's own certificate of completion for the LinkedIn Learning course
-   on cardinalities, uploaded to the assignment inbox.
-
----
-
 ## Sources
 
 - [requirements-and-use-cases.md](requirements-and-use-cases.md) - functional and non-functional requirements, use cases, and the Mermaid source of this model
