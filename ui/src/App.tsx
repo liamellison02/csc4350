@@ -2,11 +2,18 @@ import { Navigate, Route, Routes } from 'react-router-dom'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
+import { ConfigEditor } from './pages/ConfigEditor'
 
 function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+
+      <Route
+        path="/configurations/:id/edit"
+        element={<ConfigEditor />}
+      />
+
       <Route
         path="/"
         element={
@@ -15,6 +22,7 @@ function App() {
           </ProtectedRoute>
         }
       />
+
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   )
