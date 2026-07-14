@@ -180,10 +180,12 @@ func (s *Store) CreateRollout(ctx context.Context, versionID int, uid string) er
 
 // error column is varchar(255); truncate to valid utf-8 before writing.
 // $2 arrives as lowercase hex; lower() tolerates uppercase stored hashes.
+// $3 is cast in both uses: postgres otherwise deduces varchar(50) from the
+// assignment and text from the comparison and rejects the prepare (42P08).
 const resolveRolloutsSQL = `
 UPDATE rollouts SET
-  status = $3,
-  applied_at = CASE WHEN $3 = 'applied' THEN now() ELSE applied_at END,
+  status = $3::text,
+  applied_at = CASE WHEN $3::text = 'applied' THEN now() ELSE applied_at END,
   error = NULLIF($4, '')
 WHERE agent_instance_uid = $1 AND status = 'pending'
   AND config_version_id IN (SELECT id FROM config_versions WHERE lower(hash) = $2)`
