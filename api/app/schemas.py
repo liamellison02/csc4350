@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
@@ -47,3 +48,54 @@ class ConfigurationOut(BaseModel):
     name: str
     label_selector: str | None
     current_version_id: int | None
+
+
+class ConfigVersionCreate(BaseModel):
+    yaml: str
+
+
+class ConfigVersionOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    configuration_id: int
+    version_no: int
+    yaml: str
+    hash: str
+    author_id: int
+    created_at: datetime
+
+
+class RollbackRequest(BaseModel):
+    version_id: int
+
+
+class RolloutOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    config_version_id: int
+    agent_instance_uid: str
+    status: str
+    applied_at: datetime | None
+    error: str | None
+
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+    role: Literal["viewer", "operator", "admin"]
+
+
+class UserPatch(BaseModel):
+    role: Literal["viewer", "operator", "admin"] | None = None
+    is_active: bool | None = None
+
+
+class UserAdminOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    email: str
+    role: str
+    is_active: bool
