@@ -4,6 +4,7 @@ package opamp
 import (
 	"context"
 	"encoding/hex"
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -22,6 +23,14 @@ const dbTimeout = 5 * time.Second
 type AgentStore interface {
 	UpsertAgent(ctx context.Context, uid, hostname, agentType, version, effectiveHash string, labels map[string]string) error
 	MarkDisconnected(ctx context.Context, uid string) error
+	ResolveRollouts(ctx context.Context, uid, hash, status, errMsg string) error
+}
+
+// agentConn keeps the raw instance uid alongside its display form so pushed
+// messages can echo the agent's original bytes.
+type agentConn struct {
+	uid string
+	raw []byte
 }
 
 // Server adapts an opamp-go server to the helmsman store. it accepts every
@@ -35,8 +44,14 @@ type Server struct {
 
 	// the opamp Connection carries no instance uid on close, so we remember
 	// the uid learned from the first message keyed by connection identity.
+	// byUID is the reverse index used to push configs to connected agents.
 	mu    sync.Mutex
-	conns map[types.Connection]string
+	conns map[types.Connection]agentConn
+	byUID map[string]types.Connection
+
+	// Connection.Send must not be called concurrently, so pushes serialize
+	// on sendMu. never hold s.mu while sending.
+	sendMu sync.Mutex
 }
 
 // NewServer builds a control-plane opamp server bound to store and listen.
@@ -46,7 +61,8 @@ func NewServer(store AgentStore, listen string, logger *log.Logger) *Server {
 		store:  store,
 		listen: listen,
 		log:    logger,
-		conns:  make(map[types.Connection]string),
+		conns:  make(map[types.Connection]agentConn),
+		byUID:  make(map[string]types.Connection),
 	}
 }
 
@@ -79,12 +95,13 @@ func (s *Server) onConnecting(*http.Request) types.ConnectionResponse {
 	}
 }
 
-// onMessage upserts the agent when it carries a description and echoes the
-// instance uid back to the agent.
+// onMessage upserts the agent when it carries a description, settles rollout
+// rows from reported remote config statuses, and echoes the instance uid back
+// to the agent along with the server's capabilities.
 func (s *Server) onMessage(ctx context.Context, conn types.Connection, msg *protobufs.AgentToServer) *protobufs.ServerToAgent {
 	uid := InstanceUID(msg.GetInstanceUid())
 	if uid != "" {
-		s.track(conn, uid)
+		s.track(conn, uid, msg.GetInstanceUid())
 	}
 
 	// a description arrives on first connect and whenever it changes; other
@@ -99,7 +116,26 @@ func (s *Server) onMessage(ctx context.Context, conn types.Connection, msg *prot
 		}
 	}
 
-	return &protobufs.ServerToAgent{InstanceUid: msg.GetInstanceUid()}
+	// a status without a hash says nothing about a specific config; only
+	// terminal statuses settle rollout rows.
+	if rcs := msg.GetRemoteConfigStatus(); rcs != nil && len(rcs.GetLastRemoteConfigHash()) > 0 {
+		hash := hex.EncodeToString(rcs.GetLastRemoteConfigHash())
+		switch rcs.GetStatus() {
+		case protobufs.RemoteConfigStatuses_RemoteConfigStatuses_APPLIED:
+			if err := s.store.ResolveRollouts(ctx, uid, hash, "applied", ""); err != nil {
+				s.log.Printf("ERROR resolve applied rollout %s: %v", uid, err)
+			}
+		case protobufs.RemoteConfigStatuses_RemoteConfigStatuses_FAILED:
+			if err := s.store.ResolveRollouts(ctx, uid, hash, "failed", rcs.GetErrorMessage()); err != nil {
+				s.log.Printf("ERROR resolve failed rollout %s: %v", uid, err)
+			}
+		}
+	}
+
+	return &protobufs.ServerToAgent{
+		InstanceUid:  msg.GetInstanceUid(),
+		Capabilities: uint64(protobufs.ServerCapabilities_ServerCapabilities_AcceptsStatus | protobufs.ServerCapabilities_ServerCapabilities_OffersRemoteConfig),
+	}
 }
 
 // onConnectionClose marks the agent disconnected if we know its uid.
@@ -117,18 +153,63 @@ func (s *Server) onConnectionClose(conn types.Connection) {
 	s.log.Printf("agent disconnected: uid=%s", uid)
 }
 
-func (s *Server) track(conn types.Connection, uid string) {
+func (s *Server) track(conn types.Connection, uid string, raw []byte) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	s.conns[conn] = uid
+	s.conns[conn] = agentConn{uid: uid, raw: raw}
+	s.byUID[uid] = conn
 }
 
 func (s *Server) untrack(conn types.Connection) string {
 	s.mu.Lock()
 	defer s.mu.Unlock()
-	uid := s.conns[conn]
+	ac := s.conns[conn]
 	delete(s.conns, conn)
-	return uid
+	// the agent may have reconnected before the old connection closed; only
+	// drop the uid index when it still points at the closing connection.
+	if ac.uid != "" && s.byUID[ac.uid] == conn {
+		delete(s.byUID, ac.uid)
+	}
+	return ac.uid
+}
+
+// ConnectedUIDs lists agents with a live connection.
+func (s *Server) ConnectedUIDs() []string {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	out := make([]string, 0, len(s.byUID))
+	for uid := range s.byUID {
+		out = append(out, uid)
+	}
+	return out
+}
+
+// SendConfig pushes a remote config offer to a connected agent.
+func (s *Server) SendConfig(ctx context.Context, uid string, yamlBody, hash []byte) error {
+	s.mu.Lock()
+	conn, ok := s.byUID[uid]
+	var raw []byte
+	if ok {
+		raw = s.conns[conn].raw
+	}
+	s.mu.Unlock()
+	if !ok {
+		return fmt.Errorf("agent %s not connected", uid)
+	}
+	msg := &protobufs.ServerToAgent{
+		InstanceUid: raw,
+		RemoteConfig: &protobufs.AgentRemoteConfig{
+			Config: &protobufs.AgentConfigMap{
+				ConfigMap: map[string]*protobufs.AgentConfigFile{
+					"": {Body: yamlBody, ContentType: "text/yaml"},
+				},
+			},
+			ConfigHash: hash,
+		},
+	}
+	s.sendMu.Lock()
+	defer s.sendMu.Unlock()
+	return conn.Send(ctx, msg)
 }
 
 // effectiveConfigHash reads the hash of the last remote config the agent
