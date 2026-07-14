@@ -52,3 +52,13 @@ jobs:
           cache-dependency-path: control-plane/go.sum
       - run: go vet ./...
       - run: go test ./...
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - run: ./e2e/run.sh
+      - name: dump service logs on failure
+        if: failure()
+        run: cat /tmp/helmsman-e2e-logs.txt || true
