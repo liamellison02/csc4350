@@ -61,7 +61,15 @@ def create_configuration(
 ) -> Configuration:
     config = Configuration(name=body.name, label_selector=body.label_selector)
     db.add(config)
-    db.flush()
+    # unique name can collide; surface it as a 409 like users.py
+    try:
+        db.flush()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="name already exists",
+        ) from None
     db.add(
         AuditLog(
             user_id=user.id,
