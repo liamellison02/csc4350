@@ -3,6 +3,7 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { Login } from './pages/Login'
 import { Dashboard } from './pages/Dashboard'
 import { ConfigEditor } from './pages/ConfigEditor'
+import { VersionHistory } from './pages/VersionHistory'
 
 function App() {
   return (
@@ -13,6 +14,11 @@ function App() {
         path="/configurations/:id/edit"
         element={<ConfigEditor />}
       />
+
+      <Route
+      path="/configurations/:id/history"
+      element={<VersionHistory />}
+    />
 
       <Route
         path="/"
