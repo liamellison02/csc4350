@@ -7,6 +7,7 @@ import (
 	"maps"
 	"net"
 	"net/http"
+	"strings"
 	"testing"
 
 	"github.com/open-telemetry/opamp-go/protobufs"
@@ -19,10 +20,15 @@ type fakeStore struct {
 	upserts      []upsertCall
 	labels       []map[string]string
 	disconnected []string
+	resolves     []resolveCall
 }
 
 type upsertCall struct {
 	uid, hostname, agentType, version, hash string
+}
+
+type resolveCall struct {
+	uid, hash, status, errMsg string
 }
 
 func (f *fakeStore) UpsertAgent(_ context.Context, uid, hostname, agentType, version, hash string, labels map[string]string) error {
@@ -36,12 +42,25 @@ func (f *fakeStore) MarkDisconnected(_ context.Context, uid string) error {
 	return nil
 }
 
-// fakeConn is a comparable no-op Connection usable as a map key.
-type fakeConn struct{}
+func (f *fakeStore) ResolveRollouts(_ context.Context, uid, hash, status, errMsg string) error {
+	f.resolves = append(f.resolves, resolveCall{uid, hash, status, errMsg})
+	return nil
+}
 
-func (*fakeConn) Connection() net.Conn                                 { return nil }
-func (*fakeConn) Send(context.Context, *protobufs.ServerToAgent) error { return nil }
-func (*fakeConn) Disconnect() error                                    { return nil }
+// fakeConn is a comparable Connection usable as a map key. it records the
+// last message pushed through Send.
+type fakeConn struct {
+	lastSent *protobufs.ServerToAgent
+}
+
+func (*fakeConn) Connection() net.Conn { return nil }
+
+func (c *fakeConn) Send(_ context.Context, msg *protobufs.ServerToAgent) error {
+	c.lastSent = msg
+	return nil
+}
+
+func (*fakeConn) Disconnect() error { return nil }
 
 // fakeConn must satisfy the opamp Connection interface used as a map key.
 var _ types.Connection = (*fakeConn)(nil)
@@ -173,5 +192,161 @@ func TestConnectionCloseUntrackedIsNoop(t *testing.T) {
 
 	if len(store.disconnected) != 0 {
 		t.Errorf("disconnected = %v, want none for an untracked connection", store.disconnected)
+	}
+}
+
+func rolloutStatusMsg(status protobufs.RemoteConfigStatuses, errMsg string) *protobufs.AgentToServer {
+	return &protobufs.AgentToServer{
+		InstanceUid: testUID,
+		RemoteConfigStatus: &protobufs.RemoteConfigStatus{
+			LastRemoteConfigHash: []byte{0xde, 0xad, 0xbe, 0xef},
+			Status:               status,
+			ErrorMessage:         errMsg,
+		},
+	}
+}
+
+func TestRemoteConfigStatusAppliedResolvesRollouts(t *testing.T) {
+	store := &fakeStore{}
+	s := newTestServer(store)
+
+	s.onMessage(context.Background(), &fakeConn{}, rolloutStatusMsg(protobufs.RemoteConfigStatuses_RemoteConfigStatuses_APPLIED, ""))
+
+	if len(store.resolves) != 1 {
+		t.Fatalf("got %d resolves, want 1", len(store.resolves))
+	}
+	want := resolveCall{InstanceUID(testUID), "deadbeef", "applied", ""}
+	if store.resolves[0] != want {
+		t.Errorf("resolve = %+v, want %+v", store.resolves[0], want)
+	}
+}
+
+func TestRemoteConfigStatusFailedResolvesRollouts(t *testing.T) {
+	store := &fakeStore{}
+	s := newTestServer(store)
+
+	s.onMessage(context.Background(), &fakeConn{}, rolloutStatusMsg(protobufs.RemoteConfigStatuses_RemoteConfigStatuses_FAILED, "invalid yaml"))
+
+	if len(store.resolves) != 1 {
+		t.Fatalf("got %d resolves, want 1", len(store.resolves))
+	}
+	want := resolveCall{InstanceUID(testUID), "deadbeef", "failed", "invalid yaml"}
+	if store.resolves[0] != want {
+		t.Errorf("resolve = %+v, want %+v", store.resolves[0], want)
+	}
+}
+
+func TestRemoteConfigStatusIgnoredCases(t *testing.T) {
+	cases := map[string]*protobufs.AgentToServer{
+		"no status": {InstanceUid: testUID},
+		"empty hash": {
+			InstanceUid:        testUID,
+			RemoteConfigStatus: &protobufs.RemoteConfigStatus{Status: protobufs.RemoteConfigStatuses_RemoteConfigStatuses_APPLIED},
+		},
+		"applying": rolloutStatusMsg(protobufs.RemoteConfigStatuses_RemoteConfigStatuses_APPLYING, ""),
+		"unset":    rolloutStatusMsg(protobufs.RemoteConfigStatuses_RemoteConfigStatuses_UNSET, ""),
+	}
+	for name, msg := range cases {
+		t.Run(name, func(t *testing.T) {
+			store := &fakeStore{}
+			s := newTestServer(store)
+
+			s.onMessage(context.Background(), &fakeConn{}, msg)
+
+			if len(store.resolves) != 0 {
+				t.Errorf("resolves = %+v, want none", store.resolves)
+			}
+		})
+	}
+}
+
+func TestConnectedUIDsTracksLifecycle(t *testing.T) {
+	s := newTestServer(&fakeStore{})
+	conn := &fakeConn{}
+
+	s.onMessage(context.Background(), conn, descMsg())
+	if got := s.ConnectedUIDs(); len(got) != 1 || got[0] != InstanceUID(testUID) {
+		t.Fatalf("ConnectedUIDs = %v, want [%s]", got, InstanceUID(testUID))
+	}
+
+	s.onConnectionClose(conn)
+	if got := s.ConnectedUIDs(); len(got) != 0 {
+		t.Errorf("ConnectedUIDs after close = %v, want empty", got)
+	}
+}
+
+func TestSendConfigUnknownUIDErrors(t *testing.T) {
+	s := newTestServer(&fakeStore{})
+
+	err := s.SendConfig(context.Background(), "no-such-agent", []byte("x"), []byte{0x01})
+
+	if err == nil {
+		t.Fatal("SendConfig to unknown uid returned nil error")
+	}
+	if !strings.Contains(err.Error(), "no-such-agent") {
+		t.Errorf("error %q does not mention the uid", err)
+	}
+}
+
+func TestSendConfigDeliversRemoteConfig(t *testing.T) {
+	s := newTestServer(&fakeStore{})
+	conn := &fakeConn{}
+	rawUID := []byte{1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16}
+	s.onMessage(context.Background(), conn, &protobufs.AgentToServer{InstanceUid: rawUID})
+
+	yamlBody := []byte("receivers: {}\n")
+	hash := []byte{0xab, 0xcd}
+	if err := s.SendConfig(context.Background(), InstanceUID(rawUID), yamlBody, hash); err != nil {
+		t.Fatalf("SendConfig: %v", err)
+	}
+
+	sent := conn.lastSent
+	if sent == nil {
+		t.Fatal("no message sent on the tracked connection")
+	}
+	if string(sent.InstanceUid) != string(rawUID) {
+		t.Fatalf("instance uid = %x, want %x", sent.InstanceUid, rawUID)
+	}
+	rc := sent.GetRemoteConfig()
+	if string(rc.GetConfigHash()) != string(hash) {
+		t.Fatalf("config hash = %x, want %x", rc.GetConfigHash(), hash)
+	}
+	body := rc.GetConfig().GetConfigMap()[""].GetBody()
+	if string(body) != string(yamlBody) {
+		t.Fatalf("config body = %q, want %q", body, yamlBody)
+	}
+}
+
+func TestReconnectKeepsNewConnection(t *testing.T) {
+	s := newTestServer(&fakeStore{})
+	old, next := &fakeConn{}, &fakeConn{}
+
+	s.onMessage(context.Background(), old, descMsg())
+	s.onMessage(context.Background(), next, descMsg())
+	// the stale connection closes after the agent already reconnected.
+	s.onConnectionClose(old)
+
+	if got := s.ConnectedUIDs(); len(got) != 1 || got[0] != InstanceUID(testUID) {
+		t.Fatalf("ConnectedUIDs = %v, want [%s]", got, InstanceUID(testUID))
+	}
+	if err := s.SendConfig(context.Background(), InstanceUID(testUID), []byte("x"), []byte{0x01}); err != nil {
+		t.Fatalf("SendConfig after reconnect: %v", err)
+	}
+	if old.lastSent != nil {
+		t.Error("config sent to the stale connection")
+	}
+	if next.lastSent == nil {
+		t.Error("config not sent to the live connection")
+	}
+}
+
+func TestOnMessageAdvertisesCapabilities(t *testing.T) {
+	s := newTestServer(&fakeStore{})
+
+	resp := s.onMessage(context.Background(), &fakeConn{}, &protobufs.AgentToServer{InstanceUid: testUID})
+
+	want := uint64(protobufs.ServerCapabilities_ServerCapabilities_AcceptsStatus | protobufs.ServerCapabilities_ServerCapabilities_OffersRemoteConfig)
+	if resp.GetCapabilities() != want {
+		t.Errorf("capabilities = %d, want %d", resp.GetCapabilities(), want)
 	}
 }
