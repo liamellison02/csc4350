@@ -1,0 +1,16 @@
+server:
+  endpoint: ws://control-plane:4320/v1/opamp
+  tls:
+    insecure: true
+
+capabilities:
+  accepts_remote_config: true
+  reports_remote_config: true
+  reports_effective_config: true
+  reports_health: true
+
+agent:
+  executable: /otelcol-contrib
+
+storage:
+  directory: /var/lib/otelcol/supervisor

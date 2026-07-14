@@ -27,14 +27,24 @@ services:
       db:
         condition: service_healthy
 
-  # go opamp control plane lands in sprint 3
-  # control-plane:
-  #   build: ./control-plane
-  #   ports:
-  #     - "4320:4320"
-  #   environment:
-  #     DATABASE_URL: postgres://helmsman:helmsman@db:5432/helmsman
-  #     OPAMP_LISTEN: ":4320"
-  #   depends_on:
-  #     db:
-  #       condition: service_healthy
+  control-plane:
+    build: ./control-plane
+    ports:
+      - "4320:4320"
+    environment:
+      DATABASE_URL: postgres://helmsman:helmsman@db:5432/helmsman
+      OPAMP_LISTEN: ":4320"
+      RECONCILE_INTERVAL: "5s"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  # opampsupervisor running a real otelcol-contrib against the control plane
+  supervisor:
+    build:
+      context: ./e2e
+      dockerfile: supervisor.Dockerfile
+    volumes:
+      - ./e2e/supervisor.yaml:/etc/supervisor.yaml:ro
+    depends_on:
+      - control-plane
