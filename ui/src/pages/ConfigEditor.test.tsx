@@ -126,6 +126,23 @@ describe('ConfigEditor', () => {
     expect(nameInput).toBeDisabled()
   })
 
+  it('prefills the current version yaml, not the newest, when current is older', async () => {
+    // current_version_id points at the older version (id 19), e.g. after a rollback
+    vi.mocked(api.getConfiguration).mockResolvedValue({
+      ...config,
+      current_version_id: 19,
+    })
+    renderEditor(`/configurations/${CONFIG_ID}/edit`)
+
+    await waitFor(() =>
+      expect(screen.getByLabelText('YAML Configuration')).toHaveValue(
+        versions[1].yaml,
+      ),
+    )
+    expect(api.getConfiguration).toHaveBeenCalledWith(TOKEN, CONFIG_ID)
+    expect(api.getVersions).toHaveBeenCalledWith(TOKEN, CONFIG_ID)
+  })
+
   it('validates good yaml and reports a parse error for bad yaml', async () => {
     const user = userEvent.setup()
     renderEditor('/configurations/new/edit')
