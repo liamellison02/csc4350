@@ -1,6 +1,8 @@
+import hashlib
+
 from sqlalchemy import select
 
-from app.models import AuditLog, Configuration
+from app.models import Agent, AuditLog, Configuration, ConfigVersion, Rollout
 
 
 def test_create_configuration_as_operator_201_and_audit_row(
@@ -55,9 +57,29 @@ def test_create_configuration_as_admin_201(client, auth_headers):
     assert resp.json()["name"] == "admin config"
 
 
-import hashlib
+def test_create_configuration_duplicate_name_409(
+    client, auth_headers, db_session
+):
+    headers = auth_headers("operator@helmsman.local")
+    first = client.post(
+        "/configurations",
+        json={"name": "dup config", "label_selector": None},
+        headers=headers,
+    )
+    assert first.status_code == 201, first.text
+    second = client.post(
+        "/configurations",
+        json={"name": "dup config", "label_selector": None},
+        headers=headers,
+    )
+    assert second.status_code == 409
+    assert second.json()["detail"] == "name already exists"
 
-from app.models import ConfigVersion, Rollout
+    rows = db_session.scalars(
+        select(Configuration).where(Configuration.name == "dup config")
+    ).all()
+    assert len(rows) == 1
+
 
 YAML_V1 = "receivers:\n  otlp:\n    protocols:\n      grpc:\n"
 YAML_V2 = YAML_V1 + "exporters:\n  debug:\n"
@@ -236,6 +258,37 @@ def test_rollback_foreign_version_400(client, auth_headers):
     assert resp.status_code == 400
 
 
+def test_rollback_as_viewer_403(client, auth_headers):
+    config = _make_config(client, auth_headers)
+    headers = auth_headers("operator@helmsman.local")
+    v1 = client.post(
+        f"/configurations/{config['id']}/versions",
+        json={"yaml": YAML_V1},
+        headers=headers,
+    ).json()
+    client.post(
+        f"/configurations/{config['id']}/versions",
+        json={"yaml": YAML_V2},
+        headers=headers,
+    )
+    before = client.get(
+        f"/configurations/{config['id']}", headers=headers
+    ).json()["current_version_id"]
+
+    resp = client.post(
+        f"/configurations/{config['id']}/rollback",
+        json={"version_id": v1["id"]},
+        headers=auth_headers("viewer@helmsman.local"),
+    )
+    assert resp.status_code == 403
+
+    # the rollback was denied, so the current pointer did not move
+    after = client.get(
+        f"/configurations/{config['id']}", headers=headers
+    ).json()["current_version_id"]
+    assert after == before
+
+
 def test_rollouts_listing_newest_first(client, auth_headers, db_session):
     config = _make_config(client, auth_headers)
     headers = auth_headers("operator@helmsman.local")
@@ -244,8 +297,6 @@ def test_rollouts_listing_newest_first(client, auth_headers, db_session):
         json={"yaml": YAML_V1},
         headers=headers,
     ).json()
-    from app.models import Agent
-
     db_session.add(
         Agent(instance_uid="agent-e2e", hostname="h", labels={})
     )

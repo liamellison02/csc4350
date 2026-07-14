@@ -10,7 +10,7 @@ def test_list_users_admin_only(client, auth_headers):
     assert resp.status_code == 200
     emails = [u["email"] for u in resp.json()]
     assert "operator@helmsman.local" in emails
-    assert all("password" not in u for u in resp.json())
+    assert set(resp.json()[0].keys()) == {"id", "email", "role", "is_active"}
 
     denied = client.get(
         "/users", headers=auth_headers("operator@helmsman.local")
@@ -71,6 +71,26 @@ def test_create_user_bad_role_422(client, auth_headers):
     assert resp.status_code == 422
 
 
+def test_create_user_as_viewer_403(client, auth_headers, db_session):
+    resp = client.post(
+        "/users",
+        json={
+            "email": "nope@helmsman.local",
+            "password": "whatever123!",
+            "role": "viewer",
+        },
+        headers=auth_headers("viewer@helmsman.local"),
+    )
+    assert resp.status_code == 403
+    # the create was denied, so no such user exists
+    assert (
+        db_session.scalar(
+            select(User).where(User.email == "nope@helmsman.local")
+        )
+        is None
+    )
+
+
 def test_patch_role_and_deactivate(client, auth_headers, user_ids, db_session):
     target = user_ids["viewer@helmsman.local"]
     resp = client.patch(
@@ -105,6 +125,18 @@ def test_patch_unknown_user_404(client, auth_headers):
         headers=auth_headers("admin@helmsman.local"),
     )
     assert resp.status_code == 404
+
+
+def test_patch_user_as_viewer_403(client, auth_headers, user_ids, db_session):
+    target = user_ids["operator@helmsman.local"]
+    resp = client.patch(
+        f"/users/{target}",
+        json={"role": "admin"},
+        headers=auth_headers("viewer@helmsman.local"),
+    )
+    assert resp.status_code == 403
+    # the patch was denied, so the target role is untouched
+    assert db_session.get(User, target).role == "operator"
 
 
 def test_create_user_race_hits_constraint_409(
