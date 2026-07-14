@@ -24,6 +24,7 @@ type AgentStore interface {
 	UpsertAgent(ctx context.Context, uid, hostname, agentType, version, effectiveHash string, labels map[string]string) error
 	MarkDisconnected(ctx context.Context, uid string) error
 	ResolveRollouts(ctx context.Context, uid, hash, status, errMsg string) error
+	SetEffectiveConfigHash(ctx context.Context, uid, hash string) error
 }
 
 // agentConn keeps the raw instance uid alongside its display form so pushed
@@ -125,6 +126,12 @@ func (s *Server) onMessage(ctx context.Context, conn types.Connection, msg *prot
 			if err := s.store.ResolveRollouts(ctx, uid, hash, "applied", ""); err != nil {
 				s.log.Printf("ERROR resolve applied rollout %s: %v", uid, err)
 			}
+			// applied acks arrive without a description, so the upsert path
+			// never sees this hash; persist it here or the reconciler
+			// re-pushes forever.
+			if err := s.store.SetEffectiveConfigHash(ctx, uid, hash); err != nil {
+				s.log.Printf("ERROR set effective hash %s: %v", uid, err)
+			}
 		case protobufs.RemoteConfigStatuses_RemoteConfigStatuses_FAILED:
 			if err := s.store.ResolveRollouts(ctx, uid, hash, "failed", rcs.GetErrorMessage()); err != nil {
 				s.log.Printf("ERROR resolve failed rollout %s: %v", uid, err)
@@ -213,12 +220,15 @@ func (s *Server) SendConfig(ctx context.Context, uid string, yamlBody, hash []by
 }
 
 // effectiveConfigHash reads the hash of the last remote config the agent
-// acknowledged, hex-encoded; empty when the agent has none yet.
+// applied, hex-encoded; empty when the agent has none yet or the last
+// apply did not succeed, so a failed hash is never recorded as effective.
 func effectiveConfigHash(msg *protobufs.AgentToServer) string {
-	if rcs := msg.GetRemoteConfigStatus(); rcs != nil {
-		if h := rcs.GetLastRemoteConfigHash(); len(h) > 0 {
-			return hex.EncodeToString(h)
-		}
+	rcs := msg.GetRemoteConfigStatus()
+	if rcs == nil || rcs.GetStatus() != protobufs.RemoteConfigStatuses_RemoteConfigStatuses_APPLIED {
+		return ""
+	}
+	if h := rcs.GetLastRemoteConfigHash(); len(h) > 0 {
+		return hex.EncodeToString(h)
 	}
 	return ""
 }
