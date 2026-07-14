@@ -103,17 +103,24 @@ export function Dashboard() {
 
         {!loading && !error && (
           <section>
-            <h2>Configurations</h2>
-            <Link to="/configurations/new/edit">New configuration</Link>
-            <ul>
-              {configs.map((c) => (
-                <li key={c.id}>
-                  {c.name}{' '}
-                  <Link to={`/configurations/${c.id}/edit`}>edit</Link>{' '}
-                  <Link to={`/configurations/${c.id}/history`}>history</Link>
-                </li>
-              ))}
-            </ul>
+            <h2>configurations</h2>
+            {user?.role !== 'viewer' && (
+              <Link to="/configurations/new/edit">new configuration</Link>
+            )}
+            {configs.length === 0 && (
+              <p className="muted">no configurations yet.</p>
+            )}
+            {configs.length > 0 && (
+              <ul>
+                {configs.map((c) => (
+                  <li key={c.id}>
+                    {c.name}{' '}
+                    <Link to={`/configurations/${c.id}/edit`}>edit</Link>{' '}
+                    <Link to={`/configurations/${c.id}/history`}>history</Link>
+                  </li>
+                ))}
+              </ul>
+            )}
           </section>
         )}
       </main>

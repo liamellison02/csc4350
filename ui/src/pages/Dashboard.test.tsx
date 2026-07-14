@@ -112,8 +112,60 @@ describe('Dashboard', () => {
     expect(historyLinks[1]).toHaveAttribute('href', '/configurations/2/history')
 
     expect(
-      screen.getByRole('link', { name: 'New configuration' }),
+      screen.getByRole('link', { name: 'new configuration' }),
     ).toHaveAttribute('href', '/configurations/new/edit')
     expect(api.getConfigurations).toHaveBeenCalledWith('tok-abc')
+  })
+
+  it('shows an empty state when there are no configurations', async () => {
+    render(
+      <MemoryRouter>
+        <AuthContext.Provider value={authValue}>
+          <Dashboard />
+        </AuthContext.Provider>
+      </MemoryRouter>,
+    )
+
+    expect(
+      await screen.findByText('no configurations yet.'),
+    ).toBeInTheDocument()
+  })
+
+  it('hides the new configuration link from viewers but shows it to operators', async () => {
+    const viewer = render(
+      <MemoryRouter>
+        <AuthContext.Provider
+          value={{
+            ...authValue,
+            user: { id: 2, email: 'viewer@helmsman.local', role: 'viewer' },
+          }}
+        >
+          <Dashboard />
+        </AuthContext.Provider>
+      </MemoryRouter>,
+    )
+
+    await screen.findByText('no configurations yet.')
+    expect(
+      screen.queryByRole('link', { name: 'new configuration' }),
+    ).toBeNull()
+    viewer.unmount()
+
+    render(
+      <MemoryRouter>
+        <AuthContext.Provider
+          value={{
+            ...authValue,
+            user: { id: 3, email: 'operator@helmsman.local', role: 'operator' },
+          }}
+        >
+          <Dashboard />
+        </AuthContext.Provider>
+      </MemoryRouter>,
+    )
+
+    expect(
+      await screen.findByRole('link', { name: 'new configuration' }),
+    ).toBeInTheDocument()
   })
 })

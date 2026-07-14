@@ -31,7 +31,10 @@ export function ConfigEditor() {
       .then(([config, versions]) => {
         setName(config.name)
         setSelector(config.label_selector ?? '')
-        if (versions.length > 0) setYamlText(versions[0].yaml)
+        // prefill the current version, not the newest, so editing after a
+        // rollback does not silently re-save the newest yaml
+        const base = versions.find((v) => v.id === config.current_version_id) ?? versions[0]
+        if (base) setYamlText(base.yaml)
       })
       .catch((err) => setError(err instanceof ApiError ? err.message : 'failed to load'))
   }, [id, isNew, token])
