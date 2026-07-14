@@ -4,8 +4,10 @@ package store
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 
+	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
@@ -59,6 +61,128 @@ func (s *Store) MarkDisconnected(ctx context.Context, uid string) error {
 	_, err := s.pool.Exec(ctx, markDisconnectedSQL, uid)
 	if err != nil {
 		return fmt.Errorf("mark agent %s disconnected: %w", uid, err)
+	}
+	return nil
+}
+
+// DesiredConfig is a configuration's current version, the reconciler's
+// desired state.
+type DesiredConfig struct {
+	ConfigID  int
+	Selector  string
+	VersionID int
+	VersionNo int
+	Hash      string
+	YAML      string
+}
+
+// AgentState is the observed side the reconciler compares against.
+type AgentState struct {
+	Labels        map[string]string
+	EffectiveHash string
+}
+
+// ordered by config id so selector ties resolve to the lowest id.
+const desiredConfigsSQL = `
+SELECT c.id, COALESCE(c.label_selector, ''), v.id, v.version_no, v.hash, v.yaml
+FROM configurations c
+JOIN config_versions v ON v.id = c.current_version_id
+ORDER BY c.id`
+
+// DesiredConfigs returns every configuration that has a current version.
+func (s *Store) DesiredConfigs(ctx context.Context) ([]DesiredConfig, error) {
+	rows, err := s.pool.Query(ctx, desiredConfigsSQL)
+	if err != nil {
+		return nil, fmt.Errorf("query desired configs: %w", err)
+	}
+	defer rows.Close()
+	var out []DesiredConfig
+	for rows.Next() {
+		var d DesiredConfig
+		if err := rows.Scan(&d.ConfigID, &d.Selector, &d.VersionID, &d.VersionNo, &d.Hash, &d.YAML); err != nil {
+			return nil, fmt.Errorf("scan desired config: %w", err)
+		}
+		out = append(out, d)
+	}
+	return out, rows.Err()
+}
+
+const agentStatesSQL = `
+SELECT instance_uid, labels, COALESCE(effective_config_hash, '')
+FROM agents WHERE instance_uid = ANY($1)`
+
+// AgentStates returns labels and effective hash for the given uids.
+// unparseable labels degrade to empty maps rather than failing the tick.
+func (s *Store) AgentStates(ctx context.Context, uids []string) (map[string]AgentState, error) {
+	rows, err := s.pool.Query(ctx, agentStatesSQL, uids)
+	if err != nil {
+		return nil, fmt.Errorf("query agent states: %w", err)
+	}
+	defer rows.Close()
+	out := make(map[string]AgentState, len(uids))
+	for rows.Next() {
+		var uid string
+		var raw []byte
+		var st AgentState
+		if err := rows.Scan(&uid, &raw, &st.EffectiveHash); err != nil {
+			return nil, fmt.Errorf("scan agent state: %w", err)
+		}
+		if err := json.Unmarshal(raw, &st.Labels); err != nil {
+			st.Labels = map[string]string{}
+		}
+		out[uid] = st
+	}
+	return out, rows.Err()
+}
+
+const latestRolloutSQL = `
+SELECT status FROM rollouts
+WHERE agent_instance_uid = $1 AND config_version_id = $2
+ORDER BY id DESC LIMIT 1`
+
+// LatestRolloutStatus returns the newest rollout status for the pair;
+// found is false when none exists.
+func (s *Store) LatestRolloutStatus(ctx context.Context, uid string, versionID int) (string, bool, error) {
+	var status string
+	err := s.pool.QueryRow(ctx, latestRolloutSQL, uid, versionID).Scan(&status)
+	if errors.Is(err, pgx.ErrNoRows) {
+		return "", false, nil
+	}
+	if err != nil {
+		return "", false, fmt.Errorf("latest rollout for %s v%d: %w", uid, versionID, err)
+	}
+	return status, true, nil
+}
+
+const createRolloutSQL = `
+INSERT INTO rollouts (config_version_id, agent_instance_uid, status)
+VALUES ($1, $2, 'pending')`
+
+// CreateRollout records that a config version was pushed to an agent.
+func (s *Store) CreateRollout(ctx context.Context, versionID int, uid string) error {
+	if _, err := s.pool.Exec(ctx, createRolloutSQL, versionID, uid); err != nil {
+		return fmt.Errorf("create rollout for %s v%d: %w", uid, versionID, err)
+	}
+	return nil
+}
+
+// error column is varchar(255); truncate before writing.
+const resolveRolloutsSQL = `
+UPDATE rollouts SET
+  status = $3,
+  applied_at = CASE WHEN $3 = 'applied' THEN now() ELSE applied_at END,
+  error = NULLIF($4, '')
+WHERE agent_instance_uid = $1 AND status = 'pending'
+  AND config_version_id IN (SELECT id FROM config_versions WHERE hash = $2)`
+
+// ResolveRollouts settles the agent's pending rollouts whose version
+// matches the acknowledged config hash. status is applied or failed.
+func (s *Store) ResolveRollouts(ctx context.Context, uid, hash, status, errMsg string) error {
+	if len(errMsg) > 255 {
+		errMsg = errMsg[:255]
+	}
+	if _, err := s.pool.Exec(ctx, resolveRolloutsSQL, uid, hash, status, errMsg); err != nil {
+		return fmt.Errorf("resolve rollouts for %s hash %s: %w", uid, hash, err)
 	}
 	return nil
 }
