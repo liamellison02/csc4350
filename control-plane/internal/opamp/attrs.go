@@ -30,6 +30,16 @@ func Identify(desc *protobufs.AgentDescription) (hostname, agentType, version st
 	return Hostname(attrs), AgentType(attrs), Version(attrs)
 }
 
+// Labels maps the description's non-identifying attributes to the
+// labels column used for selector matching.
+func Labels(desc *protobufs.AgentDescription) map[string]string {
+	var kvs []*protobufs.KeyValue
+	if desc != nil {
+		kvs = desc.NonIdentifyingAttributes
+	}
+	return flattenAttrs(kvs)
+}
+
 // Hostname resolves the agent hostname, falling back to unknown.
 func Hostname(attrs map[string]string) string {
 	return firstNonEmpty(attrs, unknown, attrHostName, attrHostNameLegacy)

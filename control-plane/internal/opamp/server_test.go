@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"log"
+	"maps"
 	"net"
 	"net/http"
 	"testing"
@@ -12,9 +13,11 @@ import (
 	"github.com/open-telemetry/opamp-go/server/types"
 )
 
-// fakeStore records calls without touching a database.
+// fakeStore records calls without touching a database. labels are kept in a
+// parallel slice so upsertCall stays comparable for the == assertions below.
 type fakeStore struct {
 	upserts      []upsertCall
+	labels       []map[string]string
 	disconnected []string
 }
 
@@ -22,8 +25,9 @@ type upsertCall struct {
 	uid, hostname, agentType, version, hash string
 }
 
-func (f *fakeStore) UpsertAgent(_ context.Context, uid, hostname, agentType, version, hash string) error {
+func (f *fakeStore) UpsertAgent(_ context.Context, uid, hostname, agentType, version, hash string, labels map[string]string) error {
 	f.upserts = append(f.upserts, upsertCall{uid, hostname, agentType, version, hash})
+	f.labels = append(f.labels, labels)
 	return nil
 }
 
@@ -92,6 +96,26 @@ func TestOnMessageUpsertsWithDescription(t *testing.T) {
 	}
 	if string(resp.GetInstanceUid()) != string(testUID) {
 		t.Errorf("response uid = %x, want %x", resp.GetInstanceUid(), testUID)
+	}
+}
+
+func TestOnMessageRecordsLabels(t *testing.T) {
+	store := &fakeStore{}
+	s := newTestServer(store)
+	msg := descMsg()
+	msg.AgentDescription.NonIdentifyingAttributes = []*protobufs.KeyValue{
+		strKV("env", "prod"),
+		strKV("region", "us-east"),
+	}
+
+	s.onMessage(context.Background(), &fakeConn{}, msg)
+
+	if len(store.labels) != 1 {
+		t.Fatalf("got %d label records, want 1", len(store.labels))
+	}
+	want := map[string]string{"env": "prod", "region": "us-east"}
+	if !maps.Equal(store.labels[0], want) {
+		t.Errorf("labels = %v, want %v", store.labels[0], want)
 	}
 }
 
