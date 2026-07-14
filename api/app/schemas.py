@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Literal
 
 from pydantic import BaseModel, ConfigDict
 
@@ -78,3 +79,23 @@ class RolloutOut(BaseModel):
     status: str
     applied_at: datetime | None
     error: str | None
+
+
+class UserCreate(BaseModel):
+    email: str
+    password: str
+    role: Literal["viewer", "operator", "admin"]
+
+
+class UserPatch(BaseModel):
+    role: Literal["viewer", "operator", "admin"] | None = None
+    is_active: bool | None = None
+
+
+class UserAdminOut(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    email: str
+    role: str
+    is_active: bool
