@@ -91,3 +91,55 @@ export function getMe(token: string): Promise<User> {
 export function getAgents(token: string): Promise<Agent[]> {
   return apiFetch<Agent[]>('/agents', { token })
 }
+
+export interface Configuration {
+  id: number
+  name: string
+  label_selector: string | null
+  current_version_id: number | null
+}
+
+export interface ConfigVersion {
+  id: number
+  configuration_id: number
+  version_no: number
+  yaml: string
+  hash: string
+  author_id: number
+  created_at: string
+}
+
+export function getConfigurations(token: string): Promise<Configuration[]> {
+  return apiFetch<Configuration[]>('/configurations', { token })
+}
+
+export function getConfiguration(token: string, id: number): Promise<Configuration> {
+  return apiFetch<Configuration>(`/configurations/${id}`, { token })
+}
+
+export function createConfiguration(
+  token: string,
+  body: { name: string; label_selector: string | null },
+): Promise<Configuration> {
+  return apiFetch<Configuration>('/configurations', { token, method: 'POST', body })
+}
+
+export function getVersions(token: string, configId: number): Promise<ConfigVersion[]> {
+  return apiFetch<ConfigVersion[]>(`/configurations/${configId}/versions`, { token })
+}
+
+export function createVersion(token: string, configId: number, yaml: string): Promise<ConfigVersion> {
+  return apiFetch<ConfigVersion>(`/configurations/${configId}/versions`, {
+    token,
+    method: 'POST',
+    body: { yaml },
+  })
+}
+
+export function rollback(token: string, configId: number, versionId: number): Promise<Configuration> {
+  return apiFetch<Configuration>(`/configurations/${configId}/rollback`, {
+    token,
+    method: 'POST',
+    body: { version_id: versionId },
+  })
+}

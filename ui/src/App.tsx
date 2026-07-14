@@ -12,13 +12,20 @@ function App() {
 
       <Route
         path="/configurations/:id/edit"
-        element={<ConfigEditor />}
+        element={
+          <ProtectedRoute>
+            <ConfigEditor />
+          </ProtectedRoute>
+        }
       />
-
       <Route
-      path="/configurations/:id/history"
-      element={<VersionHistory />}
-    />
+        path="/configurations/:id/history"
+        element={
+          <ProtectedRoute>
+            <VersionHistory />
+          </ProtectedRoute>
+        }
+      />
 
       <Route
         path="/"

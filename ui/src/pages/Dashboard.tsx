@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
-import { getAgents } from '../lib/api'
-import type { Agent } from '../lib/api'
+import { getAgents, getConfigurations } from '../lib/api'
+import type { Agent, Configuration } from '../lib/api'
 
 function shortHash(hash: string | null): string {
   if (!hash) return '-'
@@ -11,21 +12,23 @@ function shortHash(hash: string | null): string {
 export function Dashboard() {
   const { user, token, logout } = useAuth()
   const [agents, setAgents] = useState<Agent[]>([])
+  const [configs, setConfigs] = useState<Configuration[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     if (!token) return
     let active = true
-    getAgents(token)
-      .then((rows) => {
+    Promise.all([getAgents(token), getConfigurations(token)])
+      .then(([agentRows, configRows]) => {
         if (!active) return
-        setAgents(rows)
+        setAgents(agentRows)
+        setConfigs(configRows)
         setError(null)
       })
       .catch((err) => {
         if (!active) return
-        setError(err instanceof Error ? err.message : 'failed to load agents')
+        setError(err instanceof Error ? err.message : 'failed to load dashboard')
       })
       .finally(() => {
         if (active) setLoading(false)
@@ -54,7 +57,7 @@ export function Dashboard() {
 
       <main className="content">
         <h2>fleet</h2>
-        {loading && <p className="muted">loading agents...</p>}
+        {loading && <p className="muted">loading...</p>}
         {error && (
           <div className="banner error" role="alert">
             {error}
@@ -96,6 +99,22 @@ export function Dashboard() {
               </tbody>
             </table>
           </div>
+        )}
+
+        {!loading && !error && (
+          <section>
+            <h2>Configurations</h2>
+            <Link to="/configurations/new/edit">New configuration</Link>
+            <ul>
+              {configs.map((c) => (
+                <li key={c.id}>
+                  {c.name}{' '}
+                  <Link to={`/configurations/${c.id}/edit`}>edit</Link>{' '}
+                  <Link to={`/configurations/${c.id}/history`}>history</Link>
+                </li>
+              ))}
+            </ul>
+          </section>
         )}
       </main>
     </div>
