@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export function ConfigEditor() {
   function handleValidate() {
     alert('Validation will be connected later.')
@@ -75,6 +77,13 @@ service:
           Save New Version
         </button>
       </div>
+
+      <br />
+
+<Link to="/configurations/1/history">
+  View Version History
+</Link>
+
     </main>
   )
 }
