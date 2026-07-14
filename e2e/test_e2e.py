@@ -65,6 +65,8 @@ def main() -> int:
     login.raise_for_status()
     headers = {"Authorization": f"Bearer {login.json()['access_token']}"}
 
+    # determinism: seeded selectors have 1 pair, this config has 0, and pick()
+    # prefers more pairs, so seeded configs can never steal the live agent.
     name = f"e2e-config-{int(time.time())}"
     config = client.post(
         "/configurations",
@@ -75,9 +77,12 @@ def main() -> int:
     config_id = config.json()["id"]
 
     def live_agent():
-        agents = client.get("/agents", headers=headers).json()
-        live = [a for a in agents if a["status"] == "healthy" and not a["instance_uid"].startswith("agent-00")]
-        return live[0] if live else None
+        try:
+            agents = client.get("/agents", headers=headers).json()
+            live = [a for a in agents if a["status"] == "healthy" and not a["instance_uid"].startswith("agent-00")]
+            return live[0] if live else None
+        except httpx.HTTPError:
+            return None
 
     agent = wait_for("supervisor agent to connect", live_agent)
     if agent is None:
@@ -98,14 +103,17 @@ def main() -> int:
         print(f"round {round_no}: created version {version.json()['version_no']} hash {vhash[:12]}...")
 
         def applied():
-            agents = {a["instance_uid"]: a for a in client.get("/agents", headers=headers).json()}
-            if agents.get(uid, {}).get("effective_config_hash") != vhash:
+            try:
+                agents = {a["instance_uid"]: a for a in client.get("/agents", headers=headers).json()}
+                if agents.get(uid, {}).get("effective_config_hash") != vhash:
+                    return None
+                rollouts = client.get(
+                    f"/configurations/{config_id}/rollouts", headers=headers
+                ).json()
+                ok = [r for r in rollouts if r["config_version_id"] == vid and r["agent_instance_uid"] == uid and r["status"] == "applied"]
+                return ok or None
+            except httpx.HTTPError:
                 return None
-            rollouts = client.get(
-                f"/configurations/{config_id}/rollouts", headers=headers
-            ).json()
-            ok = [r for r in rollouts if r["config_version_id"] == vid and r["agent_instance_uid"] == uid and r["status"] == "applied"]
-            return ok or None
 
         if wait_for(f"round {round_no} apply", applied) is None:
             dump(client, headers, config_id)

@@ -12,7 +12,7 @@ services:
       - ./database/schema.sql:/docker-entrypoint-initdb.d/01-schema.sql:ro
       - ./database/seed.sql:/docker-entrypoint-initdb.d/02-seed.sql:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U helmsman -d helmsman"]
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U helmsman -d helmsman"]
       interval: 5s
       timeout: 3s
       retries: 10
@@ -29,6 +29,7 @@ services:
 
   control-plane:
     build: ./control-plane
+    restart: on-failure
     ports:
       - "4320:4320"
     environment:
