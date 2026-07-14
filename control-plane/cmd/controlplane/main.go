@@ -16,6 +16,7 @@ import (
 
 	"github.com/liamellison02/csc4350/control-plane/internal/config"
 	"github.com/liamellison02/csc4350/control-plane/internal/opamp"
+	"github.com/liamellison02/csc4350/control-plane/internal/reconcile"
 	"github.com/liamellison02/csc4350/control-plane/internal/store"
 )
 
@@ -38,11 +39,18 @@ func run(logger *log.Logger) error {
 	}
 	defer pool.Close()
 
-	srv := opamp.NewServer(store.New(pool), cfg.OpAMPListen, logger)
+	st := store.New(pool)
+	srv := opamp.NewServer(st, cfg.OpAMPListen, logger)
 	if err := srv.Start(); err != nil {
 		return fmt.Errorf("start opamp server on %s: %w", cfg.OpAMPListen, err)
 	}
 	logger.Printf("opamp control plane listening on %s", cfg.OpAMPListen)
+
+	// push desired configs to drifted agents until shutdown.
+	reconcileCtx, stopReconcile := context.WithCancel(context.Background())
+	rec := reconcile.New(st, srv, logger)
+	go rec.Run(reconcileCtx, cfg.ReconcileInterval)
+	logger.Printf("reconciler running every %s", cfg.ReconcileInterval)
 
 	// block until a termination signal, then shut down cleanly.
 	sigCh := make(chan os.Signal, 1)
@@ -50,6 +58,7 @@ func run(logger *log.Logger) error {
 	sig := <-sigCh
 	logger.Printf("received %s, shutting down", sig)
 
+	stopReconcile()
 	shutdownCtx, cancel := context.WithTimeout(context.Background(), connectTimeout)
 	defer cancel()
 	if err := srv.Stop(shutdownCtx); err != nil {
