@@ -47,6 +47,19 @@ cd ui && npm test
 cd control-plane && go test ./...
 ```
 
+## end to end
+
+full opamp round trip (api -> reconciler -> live collector in
+supervisor mode -> status back):
+
+```sh
+./e2e/run.sh
+```
+
+requires docker and uv. boots db + api + control plane + a real
+otel collector under opampsupervisor, pushes two config versions,
+and asserts each is applied (effective hash + rollout row).
+
 ## workflow
 
 main + feature branches, PRs required into main, at least one non-author
