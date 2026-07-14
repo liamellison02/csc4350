@@ -1,6 +1,8 @@
+from unittest import mock
+
 from sqlalchemy import select
 
-from app.models import AuditLog
+from app.models import AuditLog, User
 
 
 def test_list_users_admin_only(client, auth_headers):
@@ -103,3 +105,62 @@ def test_patch_unknown_user_404(client, auth_headers):
         headers=auth_headers("admin@helmsman.local"),
     )
     assert resp.status_code == 404
+
+
+def test_create_user_race_hits_constraint_409(
+    client, auth_headers, session_factory
+):
+    headers = auth_headers("admin@helmsman.local")
+    email = "race@helmsman.local"
+
+    def insert_then_hash(password):
+        # a concurrent request wins the insert after our duplicate check
+        # passed but before our flush, so the flush collides for real
+        with session_factory() as other:
+            other.add(
+                User(
+                    email=email,
+                    password_hash="x",
+                    role="viewer",
+                    is_active=True,
+                )
+            )
+            other.commit()
+        return "x"
+
+    with mock.patch(
+        "app.routers.users.hash_password", side_effect=insert_then_hash
+    ):
+        resp = client.post(
+            "/users",
+            json={
+                "email": email,
+                "password": "whatever123!",
+                "role": "viewer",
+            },
+            headers=headers,
+        )
+
+    assert resp.status_code == 409, resp.text
+    assert resp.json()["detail"] == "email already exists"
+
+    with session_factory() as check:
+        rows = check.scalars(
+            select(User).where(User.email == email)
+        ).all()
+    assert len(rows) == 1
+
+
+def test_patch_noop_writes_no_audit(client, auth_headers, user_ids, db_session):
+    target = user_ids["viewer@helmsman.local"]
+    resp = client.patch(
+        f"/users/{target}",
+        json={},
+        headers=auth_headers("admin@helmsman.local"),
+    )
+    assert resp.status_code == 200, resp.text
+
+    audit = db_session.scalars(
+        select(AuditLog).where(AuditLog.action == "user admin")
+    ).all()
+    assert len(audit) == 0

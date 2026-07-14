@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy import select
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from ..deps import get_db, require_role
@@ -36,7 +37,16 @@ def create_user(
         is_active=True,
     )
     db.add(created)
-    db.flush()
+    # the check above can pass for two concurrent inserts; the loser
+    # collides on the unique email index, so surface it as a 409 too
+    try:
+        db.flush()
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="email already exists",
+        ) from None
     db.add(
         AuditLog(
             user_id=user.id,
