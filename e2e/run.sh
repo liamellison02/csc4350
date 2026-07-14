@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 cleanup() {
-  docker compose logs control-plane supervisor > /tmp/helmsman-e2e-logs.txt 2>&1 || true
+  docker compose logs > /tmp/helmsman-e2e-logs.txt 2>&1 || true
   docker compose down -v
 }
 trap cleanup EXIT
