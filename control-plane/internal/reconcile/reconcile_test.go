@@ -121,6 +121,15 @@ func TestTick(t *testing.T) {
 			wantReads: 2,
 		},
 		{
+			name:    "uppercase desired hash matches lowercase effective",
+			uids:    []string{"u1"},
+			desired: []store.DesiredConfig{dc(1, "", 11, 1, "ABCD12", "yaml-1")},
+			states: map[string]store.AgentState{
+				"u1": {Labels: map[string]string{}, EffectiveHash: "abcd12"},
+			},
+			wantReads: 2,
+		},
+		{
 			name:    "mismatch pushes and records",
 			uids:    []string{"u1"},
 			desired: []store.DesiredConfig{dc(1, "", 11, 1, "bb02", "yaml-1")},

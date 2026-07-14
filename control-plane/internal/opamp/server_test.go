@@ -21,6 +21,7 @@ type fakeStore struct {
 	labels       []map[string]string
 	disconnected []string
 	resolves     []resolveCall
+	effHashes    []effHashCall
 }
 
 type upsertCall struct {
@@ -29,6 +30,10 @@ type upsertCall struct {
 
 type resolveCall struct {
 	uid, hash, status, errMsg string
+}
+
+type effHashCall struct {
+	uid, hash string
 }
 
 func (f *fakeStore) UpsertAgent(_ context.Context, uid, hostname, agentType, version, hash string, labels map[string]string) error {
@@ -44,6 +49,11 @@ func (f *fakeStore) MarkDisconnected(_ context.Context, uid string) error {
 
 func (f *fakeStore) ResolveRollouts(_ context.Context, uid, hash, status, errMsg string) error {
 	f.resolves = append(f.resolves, resolveCall{uid, hash, status, errMsg})
+	return nil
+}
+
+func (f *fakeStore) SetEffectiveConfigHash(_ context.Context, uid, hash string) error {
+	f.effHashes = append(f.effHashes, effHashCall{uid, hash})
 	return nil
 }
 
@@ -144,6 +154,7 @@ func TestOnMessageEncodesEffectiveConfigHash(t *testing.T) {
 	msg := descMsg()
 	msg.RemoteConfigStatus = &protobufs.RemoteConfigStatus{
 		LastRemoteConfigHash: []byte{0xde, 0xad, 0xbe, 0xef},
+		Status:               protobufs.RemoteConfigStatuses_RemoteConfigStatuses_APPLIED,
 	}
 
 	s.onMessage(context.Background(), &fakeConn{}, msg)
@@ -153,6 +164,27 @@ func TestOnMessageEncodesEffectiveConfigHash(t *testing.T) {
 	}
 	if store.upserts[0].hash != "deadbeef" {
 		t.Errorf("hash = %q, want %q", store.upserts[0].hash, "deadbeef")
+	}
+}
+
+// a reconnect after a failed apply must not record the failed config's hash
+// as effective; the blank hash keeps the previously stored one.
+func TestOnMessageFailedApplyHashNotEffective(t *testing.T) {
+	store := &fakeStore{}
+	s := newTestServer(store)
+	msg := descMsg()
+	msg.RemoteConfigStatus = &protobufs.RemoteConfigStatus{
+		LastRemoteConfigHash: []byte{0xde, 0xad, 0xbe, 0xef},
+		Status:               protobufs.RemoteConfigStatuses_RemoteConfigStatuses_FAILED,
+	}
+
+	s.onMessage(context.Background(), &fakeConn{}, msg)
+
+	if len(store.upserts) != 1 {
+		t.Fatalf("got %d upserts, want 1", len(store.upserts))
+	}
+	if store.upserts[0].hash != "" {
+		t.Errorf("hash = %q, want empty for a failed apply", store.upserts[0].hash)
 	}
 }
 
@@ -219,6 +251,11 @@ func TestRemoteConfigStatusAppliedResolvesRollouts(t *testing.T) {
 	if store.resolves[0] != want {
 		t.Errorf("resolve = %+v, want %+v", store.resolves[0], want)
 	}
+	// applied acks carry no description, so the hash must be persisted here.
+	wantHash := effHashCall{InstanceUID(testUID), "deadbeef"}
+	if len(store.effHashes) != 1 || store.effHashes[0] != wantHash {
+		t.Errorf("effective hashes = %+v, want [%+v]", store.effHashes, wantHash)
+	}
 }
 
 func TestRemoteConfigStatusFailedResolvesRollouts(t *testing.T) {
@@ -233,6 +270,9 @@ func TestRemoteConfigStatusFailedResolvesRollouts(t *testing.T) {
 	want := resolveCall{InstanceUID(testUID), "deadbeef", "failed", "invalid yaml"}
 	if store.resolves[0] != want {
 		t.Errorf("resolve = %+v, want %+v", store.resolves[0], want)
+	}
+	if len(store.effHashes) != 0 {
+		t.Errorf("effective hashes = %+v, want none for a failed apply", store.effHashes)
 	}
 }
 
@@ -255,6 +295,9 @@ func TestRemoteConfigStatusIgnoredCases(t *testing.T) {
 
 			if len(store.resolves) != 0 {
 				t.Errorf("resolves = %+v, want none", store.resolves)
+			}
+			if len(store.effHashes) != 0 {
+				t.Errorf("effective hashes = %+v, want none", store.effHashes)
 			}
 		})
 	}
@@ -314,6 +357,9 @@ func TestSendConfigDeliversRemoteConfig(t *testing.T) {
 	body := rc.GetConfig().GetConfigMap()[""].GetBody()
 	if string(body) != string(yamlBody) {
 		t.Fatalf("config body = %q, want %q", body, yamlBody)
+	}
+	if ct := rc.GetConfig().GetConfigMap()[""].GetContentType(); ct != "text/yaml" {
+		t.Fatalf("content type = %q, want text/yaml", ct)
 	}
 }
 

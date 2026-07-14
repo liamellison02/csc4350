@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -61,6 +62,17 @@ func (s *Store) MarkDisconnected(ctx context.Context, uid string) error {
 	_, err := s.pool.Exec(ctx, markDisconnectedSQL, uid)
 	if err != nil {
 		return fmt.Errorf("mark agent %s disconnected: %w", uid, err)
+	}
+	return nil
+}
+
+const setEffectiveHashSQL = `
+UPDATE agents SET effective_config_hash = $2, last_seen = now() WHERE instance_uid = $1`
+
+// SetEffectiveConfigHash records the hash an agent acknowledged applying.
+func (s *Store) SetEffectiveConfigHash(ctx context.Context, uid, hash string) error {
+	if _, err := s.pool.Exec(ctx, setEffectiveHashSQL, uid, hash); err != nil {
+		return fmt.Errorf("set effective hash for %s: %w", uid, err)
 	}
 	return nil
 }
@@ -166,20 +178,21 @@ func (s *Store) CreateRollout(ctx context.Context, versionID int, uid string) er
 	return nil
 }
 
-// error column is varchar(255); truncate before writing.
+// error column is varchar(255); truncate to valid utf-8 before writing.
+// $2 arrives as lowercase hex; lower() tolerates uppercase stored hashes.
 const resolveRolloutsSQL = `
 UPDATE rollouts SET
   status = $3,
   applied_at = CASE WHEN $3 = 'applied' THEN now() ELSE applied_at END,
   error = NULLIF($4, '')
 WHERE agent_instance_uid = $1 AND status = 'pending'
-  AND config_version_id IN (SELECT id FROM config_versions WHERE hash = $2)`
+  AND config_version_id IN (SELECT id FROM config_versions WHERE lower(hash) = $2)`
 
 // ResolveRollouts settles the agent's pending rollouts whose version
 // matches the acknowledged config hash. status is applied or failed.
 func (s *Store) ResolveRollouts(ctx context.Context, uid, hash, status, errMsg string) error {
 	if len(errMsg) > 255 {
-		errMsg = errMsg[:255]
+		errMsg = strings.ToValidUTF8(errMsg[:255], "")
 	}
 	if _, err := s.pool.Exec(ctx, resolveRolloutsSQL, uid, hash, status, errMsg); err != nil {
 		return fmt.Errorf("resolve rollouts for %s hash %s: %w", uid, hash, err)
