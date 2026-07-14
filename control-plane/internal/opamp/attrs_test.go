@@ -1,6 +1,7 @@
 package opamp
 
 import (
+	"maps"
 	"testing"
 
 	"github.com/open-telemetry/opamp-go/protobufs"
@@ -91,6 +92,23 @@ func TestIdentify(t *testing.T) {
 	host, typ, ver = Identify(nil)
 	if host != unknown || typ != unknown || ver != unknown {
 		t.Errorf("Identify(nil) = (%q, %q, %q), want all %q", host, typ, ver, unknown)
+	}
+}
+
+func TestLabels(t *testing.T) {
+	desc := &protobufs.AgentDescription{
+		NonIdentifyingAttributes: []*protobufs.KeyValue{
+			{Key: "env", Value: &protobufs.AnyValue{Value: &protobufs.AnyValue_StringValue{StringValue: "prod"}}},
+			{Key: "region", Value: &protobufs.AnyValue{Value: &protobufs.AnyValue_StringValue{StringValue: "us-east"}}},
+		},
+	}
+	got := Labels(desc)
+	want := map[string]string{"env": "prod", "region": "us-east"}
+	if !maps.Equal(got, want) {
+		t.Fatalf("Labels() = %v, want %v", got, want)
+	}
+	if got := Labels(nil); len(got) != 0 {
+		t.Fatalf("Labels(nil) = %v, want empty", got)
 	}
 }
 

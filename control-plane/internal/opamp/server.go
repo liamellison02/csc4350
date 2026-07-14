@@ -20,7 +20,7 @@ const dbTimeout = 5 * time.Second
 
 // AgentStore is the persistence surface the server needs.
 type AgentStore interface {
-	UpsertAgent(ctx context.Context, uid, hostname, agentType, version, effectiveHash string) error
+	UpsertAgent(ctx context.Context, uid, hostname, agentType, version, effectiveHash string, labels map[string]string) error
 	MarkDisconnected(ctx context.Context, uid string) error
 }
 
@@ -92,7 +92,7 @@ func (s *Server) onMessage(ctx context.Context, conn types.Connection, msg *prot
 	if desc := msg.GetAgentDescription(); desc != nil {
 		hostname, agentType, version := Identify(desc)
 		hash := effectiveConfigHash(msg)
-		if err := s.store.UpsertAgent(ctx, uid, hostname, agentType, version, hash); err != nil {
+		if err := s.store.UpsertAgent(ctx, uid, hostname, agentType, version, hash, Labels(desc)); err != nil {
 			s.log.Printf("ERROR upsert agent %s: %v", uid, err)
 		} else {
 			s.log.Printf("agent upserted: uid=%s host=%s type=%s version=%s", uid, hostname, agentType, version)

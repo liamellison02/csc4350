@@ -3,6 +3,7 @@ package store
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -23,19 +24,27 @@ func New(pool *pgxpool.Pool) *Store {
 // and mark the agent healthy with a fresh last_seen. a blank incoming hash
 // keeps the previously recorded one instead of clobbering it.
 const upsertAgentSQL = `
-INSERT INTO agents (instance_uid, hostname, agent_type, version, status, last_seen, effective_config_hash)
-VALUES ($1, $2, $3, $4, 'healthy', now(), NULLIF($5, ''))
+INSERT INTO agents (instance_uid, hostname, agent_type, version, status, last_seen, effective_config_hash, labels)
+VALUES ($1, $2, $3, $4, 'healthy', now(), NULLIF($5, ''), $6::jsonb)
 ON CONFLICT (instance_uid) DO UPDATE SET
   hostname = EXCLUDED.hostname,
   agent_type = EXCLUDED.agent_type,
   version = EXCLUDED.version,
   status = 'healthy',
   last_seen = now(),
-  effective_config_hash = COALESCE(NULLIF(EXCLUDED.effective_config_hash, ''), agents.effective_config_hash)`
+  effective_config_hash = COALESCE(NULLIF(EXCLUDED.effective_config_hash, ''), agents.effective_config_hash),
+  labels = EXCLUDED.labels`
 
 // UpsertAgent records an agent as healthy, inserting or refreshing its row.
-func (s *Store) UpsertAgent(ctx context.Context, uid, hostname, agentType, version, effectiveHash string) error {
-	_, err := s.pool.Exec(ctx, upsertAgentSQL, uid, hostname, agentType, version, effectiveHash)
+func (s *Store) UpsertAgent(ctx context.Context, uid, hostname, agentType, version, effectiveHash string, labels map[string]string) error {
+	if labels == nil {
+		labels = map[string]string{}
+	}
+	labelsJSON, err := json.Marshal(labels)
+	if err != nil {
+		return fmt.Errorf("marshal labels for agent %s: %w", uid, err)
+	}
+	_, err = s.pool.Exec(ctx, upsertAgentSQL, uid, hostname, agentType, version, effectiveHash, labelsJSON)
 	if err != nil {
 		return fmt.Errorf("upsert agent %s: %w", uid, err)
 	}
