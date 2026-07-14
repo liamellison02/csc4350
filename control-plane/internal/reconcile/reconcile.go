@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/hex"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/liamellison02/csc4350/control-plane/internal/selector"
@@ -81,6 +82,9 @@ func (r *Reconciler) Tick(ctx context.Context) error {
 		if !ok {
 			continue
 		}
+		// effective hashes are lowercase hex; normalize the stored side so a
+		// case difference cannot defeat convergence.
+		d.Hash = strings.ToLower(d.Hash)
 		if st.EffectiveHash == d.Hash {
 			continue
 		}
