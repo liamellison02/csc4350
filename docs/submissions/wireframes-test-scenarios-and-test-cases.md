@@ -10,8 +10,12 @@
 
 Helmsman is a self-hosted control plane for OpenTelemetry Collector fleets.
 The management surface is a single-page React application with four screens
-behind a login gate: the login screen, the fleet dashboard, the configuration
-editor, and the version history view.
+behind a login gate:
+1) the login screen
+2) the fleet dashboard
+3) the configuration editor
+4) the version history view
+
 This submission documents those screens as annotated wireframes, describes six
 testing scenarios in which a user completes a task, and maps every scenario to
 the automated unit tests that verify it.
