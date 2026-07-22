@@ -1,0 +1,93 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="640" viewBox="0 0 980 640" font-family="ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <rect width="980" height="640" fill="#f7f8fa"/>
+
+  <!-- title -->
+  <text x="32" y="38" font-size="20" font-weight="700" fill="#1f2430">Version History screen</text>
+  <text x="32" y="58" font-size="13" fill="#6b7280">Helmsman - compare versions and roll back (route: /configurations/:id/history)</text>
+
+  <!-- app viewport frame -->
+  <rect x="32" y="76" width="580" height="540" rx="8" fill="#ffffff" stroke="#c4c9d4"/>
+  <rect x="32" y="76" width="580" height="28" rx="8" fill="#e2e6ec" stroke="#c4c9d4"/>
+  <circle cx="48" cy="90" r="4" fill="#c4c9d4"/>
+  <circle cx="62" cy="90" r="4" fill="#c4c9d4"/>
+  <circle cx="76" cy="90" r="4" fill="#c4c9d4"/>
+
+  <!-- heading -->
+  <text x="50" y="134" font-size="17" font-weight="700" fill="#1f2430">Version History</text>
+  <text x="50" y="154" font-size="12" fill="#6b7280">View previous versions of prod-collectors.</text>
+  <text x="50" y="178" font-size="12" fill="#2563eb">&#8592; Back to Configuration Editor</text>
+
+  <!-- compare section -->
+  <text x="50" y="208" font-size="13" font-weight="700" fill="#1f2430">Compare</text>
+  <text x="50" y="230" font-size="11" fill="#374151">from</text>
+  <rect x="82" y="216" width="92" height="24" rx="5" fill="#ffffff" stroke="#9aa2b1"/>
+  <text x="90" y="232" font-size="11" fill="#1f2430">Version 2</text>
+  <text x="166" y="232" font-size="9" fill="#6b7280">&#9662;</text>
+  <text x="188" y="230" font-size="11" fill="#374151">to</text>
+  <rect x="210" y="216" width="92" height="24" rx="5" fill="#ffffff" stroke="#9aa2b1"/>
+  <text x="218" y="232" font-size="11" fill="#1f2430">Version 3</text>
+  <text x="294" y="232" font-size="9" fill="#6b7280">&#9662;</text>
+  <rect x="314" y="215" width="74" height="26" rx="6" fill="#1f2430"/>
+  <text x="351" y="232" font-size="11" font-weight="600" fill="#ffffff" text-anchor="middle">Compare</text>
+
+  <!-- diff pre -->
+  <rect x="50" y="250" width="470" height="104" rx="5" fill="#0f172a"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" xml:space="preserve">
+    <text x="62" y="270" fill="#94a3b8">&#160;&#160;receivers:</text>
+    <text x="62" y="286" fill="#94a3b8">&#160;&#160;&#160;&#160;otlp:</text>
+    <text x="62" y="302" fill="#94a3b8">&#160;&#160;&#160;&#160;&#160;&#160;protocols:</text>
+    <text x="62" y="318" fill="#94a3b8">&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;grpc:</text>
+    <text x="62" y="334" fill="#4ade80">+ exporters:</text>
+    <text x="62" y="350" fill="#4ade80">+&#160;&#160;&#160;debug:</text>
+  </g>
+
+  <!-- version list -->
+  <line x1="50" y1="374" x2="592" y2="374" stroke="#e6e9ef"/>
+  <text x="50" y="396" font-size="14" font-weight="700" fill="#1f2430">Version 3</text>
+  <text x="50" y="414" font-size="11" fill="#6b7280">Created by: user #7</text>
+  <text x="50" y="430" font-size="11" fill="#6b7280">Created: 7/12/2026, 10:00:00 AM</text>
+  <rect x="50" y="440" width="184" height="26" rx="6" fill="#ffffff" stroke="#b42318"/>
+  <text x="142" y="457" font-size="11" fill="#b42318" text-anchor="middle">Rollback to this version</text>
+
+  <line x1="50" y1="484" x2="592" y2="484" stroke="#e6e9ef"/>
+  <text x="50" y="506" font-size="14" font-weight="700" fill="#1f2430">Version 2</text>
+  <rect x="132" y="493" width="66" height="18" rx="9" fill="#e6f4ea" stroke="#2e7d46"/>
+  <text x="165" y="506" font-size="10" fill="#1e6b38" text-anchor="middle">Current</text>
+  <text x="50" y="524" font-size="11" fill="#6b7280">Created by: user #4</text>
+  <text x="50" y="540" font-size="11" fill="#6b7280">Created: 7/08/2026, 10:00:00 AM</text>
+
+  <line x1="50" y1="560" x2="592" y2="560" stroke="#e6e9ef"/>
+  <text x="50" y="582" font-size="14" font-weight="700" fill="#1f2430">Version 1</text>
+  <rect x="50" y="590" width="184" height="20" rx="6" fill="#ffffff" stroke="#b42318"/>
+  <text x="142" y="604" font-size="10" fill="#b42318" text-anchor="middle">Rollback to this version</text>
+
+  <!-- annotations -->
+  <g stroke="#2563eb" stroke-dasharray="4 3">
+    <line x1="388" y1="228" x2="640" y2="180"/>
+    <line x1="520" y1="300" x2="640" y2="290"/>
+    <line x1="198" y1="502" x2="640" y2="400"/>
+    <line x1="234" y1="453" x2="640" y2="500"/>
+  </g>
+  <g font-size="12">
+    <circle cx="640" cy="180" r="3" fill="#2563eb"/>
+    <text x="652" y="170" font-weight="700" fill="#2563eb">Compare panel</text>
+    <text x="652" y="188" fill="#374151">shown only when 2+ versions exist;</text>
+    <text x="652" y="204" fill="#374151">pick any two, then Compare.</text>
+
+    <circle cx="640" cy="290" r="3" fill="#2563eb"/>
+    <text x="652" y="280" font-weight="700" fill="#2563eb">Line diff</text>
+    <text x="652" y="298" fill="#374151">"+" added, "-" removed, " " context;</text>
+    <text x="652" y="314" fill="#374151">defaults to newest vs the one before.</text>
+
+    <circle cx="640" cy="400" r="3" fill="#2563eb"/>
+    <text x="652" y="390" font-weight="700" fill="#2563eb">Current marker</text>
+    <text x="652" y="408" fill="#374151">the version live on the fleet is tagged</text>
+    <text x="652" y="424" fill="#374151">"Current" and has no rollback button.</text>
+
+    <circle cx="640" cy="500" r="3" fill="#2563eb"/>
+    <text x="652" y="490" font-weight="700" fill="#2563eb">Rollback</text>
+    <text x="652" y="508" fill="#374151">operator + admin only, non-current</text>
+    <text x="652" y="524" fill="#374151">versions; asks to confirm, re-points</text>
+    <text x="652" y="540" fill="#374151">the config, then re-fetches the list.</text>
+  </g>
+</svg>

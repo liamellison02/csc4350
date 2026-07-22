@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="740" height="452" viewBox="0 0 740 452" font-family="ui-monospace, SFMono-Regular, Menlo, Consolas, monospace">
+  <rect x="0.5" y="0.5" width="739" height="451" rx="10" fill="#0d1117" stroke="#30363d"/>
+
+  <!-- title bar -->
+  <circle cx="24" cy="21" r="5" fill="#ff5f56"/>
+  <circle cx="42" cy="21" r="5" fill="#febc2e"/>
+  <circle cx="60" cy="21" r="5" fill="#27c93f"/>
+  <text x="370" y="26" font-size="12" fill="#7d8590" text-anchor="middle">helmsman - test suites (all passing)</text>
+  <line x1="0" y1="42" x2="740" y2="42" stroke="#21262d"/>
+
+  <g font-size="13" xml:space="preserve">
+    <!-- ui -->
+    <text x="20" y="72" fill="#e6edf3"><tspan fill="#7ee787">$</tspan> cd ui &amp;&amp; npm test</text>
+    <text x="20" y="92" fill="#adbac7"><tspan fill="#3fb950">  ✓ </tspan>src/pages/Login.test.tsx <tspan fill="#6e7681">(2 tests)</tspan></text>
+    <text x="20" y="112" fill="#adbac7"><tspan fill="#3fb950">  ✓ </tspan>src/pages/Dashboard.test.tsx <tspan fill="#6e7681">(4 tests)</tspan></text>
+    <text x="20" y="132" fill="#adbac7"><tspan fill="#3fb950">  ✓ </tspan>src/pages/ConfigEditor.test.tsx <tspan fill="#6e7681">(7 tests)</tspan></text>
+    <text x="20" y="152" fill="#adbac7"><tspan fill="#3fb950">  ✓ </tspan>src/pages/VersionHistory.test.tsx <tspan fill="#6e7681">(4 tests)</tspan></text>
+    <text x="20" y="172" fill="#adbac7"><tspan fill="#3fb950">  ✓ </tspan>src/components/ProtectedRoute.test.tsx <tspan fill="#6e7681">(1 test)</tspan></text>
+    <text x="20" y="196" fill="#adbac7">   Test Files  <tspan fill="#3fb950" font-weight="700">5 passed (5)</tspan></text>
+    <text x="20" y="216" fill="#adbac7">        Tests  <tspan fill="#3fb950" font-weight="700">18 passed (18)</tspan></text>
+
+    <!-- api -->
+    <text x="20" y="252" fill="#e6edf3"><tspan fill="#7ee787">$</tspan> cd api &amp;&amp; uv run pytest</text>
+    <text x="20" y="272" fill="#3fb950">  .....................................  <tspan fill="#6e7681">[100%]</tspan></text>
+    <text x="20" y="292" fill="#adbac7">  <tspan fill="#3fb950" font-weight="700">37 passed</tspan> in 0.88s</text>
+
+    <!-- control plane -->
+    <text x="20" y="328" fill="#e6edf3"><tspan fill="#7ee787">$</tspan> cd control-plane &amp;&amp; go test ./...</text>
+    <text x="20" y="348" fill="#adbac7">  <tspan fill="#3fb950">ok</tspan>   internal/config      0.410s</text>
+    <text x="20" y="368" fill="#adbac7">  <tspan fill="#3fb950">ok</tspan>   internal/opamp       0.600s</text>
+    <text x="20" y="388" fill="#adbac7">  <tspan fill="#3fb950">ok</tspan>   internal/reconcile   0.743s</text>
+    <text x="20" y="408" fill="#adbac7">  <tspan fill="#3fb950">ok</tspan>   internal/selector    0.569s</text>
+    <text x="20" y="434" fill="#6e7681">  85 unit tests across 3 languages, 0 failures</text>
+  </g>
+</svg>
