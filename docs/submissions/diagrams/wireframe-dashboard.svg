@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="660" viewBox="0 0 1000 660" font-family="ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <rect width="1000" height="660" fill="#f7f8fa"/>
+
+  <!-- title -->
+  <text x="32" y="38" font-size="20" font-weight="700" fill="#1f2430">Dashboard screen</text>
+  <text x="32" y="58" font-size="13" fill="#6b7280">Helmsman - fleet health and configuration list (route: /, protected)</text>
+
+  <!-- app viewport frame -->
+  <rect x="32" y="76" width="620" height="556" rx="8" fill="#ffffff" stroke="#c4c9d4"/>
+  <rect x="32" y="76" width="620" height="28" rx="8" fill="#e2e6ec" stroke="#c4c9d4"/>
+  <circle cx="48" cy="90" r="4" fill="#c4c9d4"/>
+  <circle cx="62" cy="90" r="4" fill="#c4c9d4"/>
+  <circle cx="76" cy="90" r="4" fill="#c4c9d4"/>
+
+  <!-- app topbar -->
+  <rect x="32" y="104" width="620" height="40" fill="#1f2430"/>
+  <text x="50" y="129" font-size="15" font-weight="700" fill="#ffffff">Helmsman</text>
+  <text x="470" y="129" font-size="11" fill="#c7cdd8" text-anchor="end">admin@helmsman.local</text>
+  <rect x="476" y="114" width="52" height="20" rx="10" fill="#2f3646"/>
+  <text x="502" y="128" font-size="10" fill="#dfe3ea" text-anchor="middle">admin</text>
+  <rect x="536" y="113" width="98" height="22" rx="5" fill="none" stroke="#6b7280"/>
+  <text x="585" y="128" font-size="11" fill="#dfe3ea" text-anchor="middle">log out</text>
+
+  <!-- fleet section -->
+  <text x="48" y="180" font-size="15" font-weight="700" fill="#1f2430">fleet</text>
+
+  <!-- table header -->
+  <rect x="48" y="190" width="588" height="26" fill="#eef1f5" stroke="#d5dae2"/>
+  <g font-size="10" fill="#4b5563">
+    <text x="56" y="207">hostname</text>
+    <text x="152" y="207">instance uid</text>
+    <text x="272" y="207">type</text>
+    <text x="336" y="207">version</text>
+    <text x="404" y="207">status</text>
+    <text x="490" y="207">last seen</text>
+    <text x="576" y="207">hash</text>
+  </g>
+  <!-- row 1 -->
+  <rect x="48" y="216" width="588" height="30" fill="#ffffff" stroke="#e6e9ef"/>
+  <g font-size="10" fill="#1f2430">
+    <text x="56" y="235">collector-prod-01</text>
+    <text x="152" y="235" fill="#6b7280">agent-001</text>
+    <text x="272" y="235">otelcol</text>
+    <text x="336" y="235">0.100.0</text>
+    <rect x="404" y="223" width="60" height="16" rx="8" fill="#e6f4ea" stroke="#2e7d46"/>
+    <text x="434" y="235" fill="#1e6b38" text-anchor="middle">healthy</text>
+    <text x="490" y="235" fill="#6b7280">12:00:00Z</text>
+    <text x="576" y="235" fill="#6b7280">abcdef12...</text>
+  </g>
+  <!-- row 2 -->
+  <rect x="48" y="246" width="588" height="30" fill="#fbfbfc" stroke="#e6e9ef"/>
+  <g font-size="10" fill="#1f2430">
+    <text x="56" y="265">collector-edge-01</text>
+    <text x="152" y="265" fill="#6b7280">agent-003</text>
+    <text x="272" y="265">otelcol</text>
+    <text x="336" y="265">0.9.0</text>
+    <rect x="404" y="253" width="84" height="16" rx="8" fill="#f0f1f3" stroke="#9aa2b1"/>
+    <text x="446" y="265" fill="#55607a" text-anchor="middle">disconnected</text>
+    <text x="490" y="265" fill="#9aa2b1">-</text>
+    <text x="576" y="265" fill="#9aa2b1">-</text>
+  </g>
+
+  <!-- configurations section -->
+  <text x="48" y="320" font-size="15" font-weight="700" fill="#1f2430">configurations</text>
+  <rect x="48" y="332" width="146" height="26" rx="5" fill="#ffffff" stroke="#2563eb"/>
+  <text x="121" y="349" font-size="11" fill="#2563eb" text-anchor="middle">+ new configuration</text>
+
+  <!-- config list -->
+  <g font-size="12">
+    <line x1="48" y1="380" x2="636" y2="380" stroke="#eef1f5"/>
+    <text x="52" y="400" fill="#1f2430" font-weight="600">prod-collectors</text>
+    <text x="220" y="400" fill="#2563eb">edit</text>
+    <text x="270" y="400" fill="#2563eb">history</text>
+    <line x1="48" y1="414" x2="636" y2="414" stroke="#eef1f5"/>
+    <text x="52" y="434" fill="#1f2430" font-weight="600">edge-collectors</text>
+    <text x="220" y="434" fill="#2563eb">edit</text>
+    <text x="270" y="434" fill="#2563eb">history</text>
+    <line x1="48" y1="448" x2="636" y2="448" stroke="#eef1f5"/>
+  </g>
+
+  <!-- annotations -->
+  <g stroke="#2563eb" stroke-dasharray="4 3">
+    <line x1="464" y1="231" x2="680" y2="200"/>
+    <line x1="194" y1="345" x2="680" y2="330"/>
+    <line x1="300" y1="215" x2="680" y2="450"/>
+    <line x1="300" y1="400" x2="680" y2="560"/>
+  </g>
+  <g font-size="12">
+    <circle cx="680" cy="200" r="3" fill="#2563eb"/>
+    <text x="692" y="188" font-weight="700" fill="#2563eb">Live status badge</text>
+    <text x="692" y="206" fill="#374151">colored per reported state:</text>
+    <text x="692" y="222" fill="#374151">healthy, degraded, disconnected.</text>
+
+    <circle cx="680" cy="330" r="3" fill="#2563eb"/>
+    <text x="692" y="318" font-weight="700" fill="#2563eb">RBAC-gated action</text>
+    <text x="692" y="336" fill="#374151">"new configuration" shows for</text>
+    <text x="692" y="352" fill="#374151">operator + admin; hidden for viewer.</text>
+
+    <circle cx="680" cy="450" r="3" fill="#2563eb"/>
+    <text x="692" y="438" font-weight="700" fill="#2563eb">Fleet table states</text>
+    <text x="692" y="456" fill="#374151">"loading..." while fetching; an error</text>
+    <text x="692" y="472" fill="#374151">banner on failure; "no agents</text>
+    <text x="692" y="488" fill="#374151">registered yet." when empty.</text>
+
+    <circle cx="680" cy="560" r="3" fill="#2563eb"/>
+    <text x="692" y="548" font-weight="700" fill="#2563eb">Per-config links</text>
+    <text x="692" y="566" fill="#374151">each row links to its editor and</text>
+    <text x="692" y="582" fill="#374151">version history; empty list shows</text>
+    <text x="692" y="598" fill="#374151">"no configurations yet."</text>
+  </g>
+</svg>

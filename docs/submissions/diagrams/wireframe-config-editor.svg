@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="620" viewBox="0 0 960 620" font-family="ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+  <rect width="960" height="620" fill="#f7f8fa"/>
+
+  <!-- title -->
+  <text x="32" y="38" font-size="20" font-weight="700" fill="#1f2430">Configuration Editor screen</text>
+  <text x="32" y="58" font-size="13" fill="#6b7280">Helmsman - author, validate, and save a collector config (route: /configurations/:id/edit)</text>
+
+  <!-- app viewport frame -->
+  <rect x="32" y="76" width="560" height="516" rx="8" fill="#ffffff" stroke="#c4c9d4"/>
+  <rect x="32" y="76" width="560" height="28" rx="8" fill="#e2e6ec" stroke="#c4c9d4"/>
+  <circle cx="48" cy="90" r="4" fill="#c4c9d4"/>
+  <circle cx="62" cy="90" r="4" fill="#c4c9d4"/>
+  <circle cx="76" cy="90" r="4" fill="#c4c9d4"/>
+
+  <!-- heading -->
+  <text x="50" y="134" font-size="17" font-weight="700" fill="#1f2430">Configuration Editor</text>
+  <text x="50" y="154" font-size="12" fill="#6b7280">Edit and save collector configurations.</text>
+  <text x="50" y="178" font-size="12" fill="#2563eb">&#8592; Back to Dashboard</text>
+
+  <!-- name field -->
+  <text x="50" y="208" font-size="12" fill="#374151">Configuration Name</text>
+  <rect x="50" y="216" width="300" height="30" rx="5" fill="#f0f1f3" stroke="#c4c9d4"/>
+  <text x="62" y="235" font-size="12" fill="#55607a">prod-collectors</text>
+
+  <!-- selector field (create mode only) -->
+  <text x="50" y="272" font-size="12" fill="#374151">Label Selector (k=v, empty matches all agents)</text>
+  <rect x="50" y="280" width="300" height="30" rx="5" fill="#ffffff" stroke="#9aa2b1" stroke-dasharray="5 3"/>
+  <text x="62" y="299" font-size="12" fill="#9aa2b1">env=prod</text>
+
+  <!-- yaml textarea -->
+  <text x="50" y="338" font-size="12" fill="#374151">YAML Configuration</text>
+  <rect x="50" y="346" width="500" height="168" rx="5" fill="#fbfbfc" stroke="#9aa2b1"/>
+  <g font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="11" fill="#334155" xml:space="preserve">
+    <text x="62" y="366">receivers:</text>
+    <text x="62" y="382">&#160;&#160;otlp:</text>
+    <text x="62" y="398">&#160;&#160;&#160;&#160;protocols:</text>
+    <text x="62" y="414">&#160;&#160;&#160;&#160;&#160;&#160;grpc:</text>
+    <text x="62" y="430">exporters:</text>
+    <text x="62" y="446">&#160;&#160;debug:</text>
+    <text x="62" y="462">service:</text>
+    <text x="62" y="478">&#160;&#160;pipelines:</text>
+    <text x="62" y="494">&#160;&#160;&#160;&#160;traces: { receivers: [otlp], exporters: [debug] }</text>
+  </g>
+
+  <!-- validation status -->
+  <rect x="50" y="524" width="120" height="20" rx="4" fill="#e6f4ea"/>
+  <text x="58" y="538" font-size="11" fill="#1e6b38">valid yaml</text>
+
+  <!-- buttons -->
+  <rect x="50" y="552" width="88" height="30" rx="6" fill="#ffffff" stroke="#1f2430"/>
+  <text x="94" y="571" font-size="12" fill="#1f2430" text-anchor="middle">Validate</text>
+  <rect x="148" y="552" width="168" height="30" rx="6" fill="#1f2430"/>
+  <text x="232" y="571" font-size="12" font-weight="600" fill="#ffffff" text-anchor="middle">Save as New Version</text>
+
+  <!-- annotations -->
+  <g stroke="#2563eb" stroke-dasharray="4 3">
+    <line x1="350" y1="231" x2="620" y2="150"/>
+    <line x1="350" y1="295" x2="620" y2="250"/>
+    <line x1="550" y1="430" x2="620" y2="350"/>
+    <line x1="170" y1="534" x2="620" y2="450"/>
+    <line x1="316" y1="567" x2="620" y2="545"/>
+  </g>
+  <g font-size="12">
+    <circle cx="620" cy="150" r="3" fill="#2563eb"/>
+    <text x="632" y="140" font-weight="700" fill="#2563eb">Name</text>
+    <text x="632" y="158" fill="#374151">set once; disabled when editing an</text>
+    <text x="632" y="174" fill="#374151">existing config and for viewers.</text>
+
+    <circle cx="620" cy="250" r="3" fill="#2563eb"/>
+    <text x="632" y="240" font-weight="700" fill="#2563eb">Label selector</text>
+    <text x="632" y="258" fill="#374151">create mode only; picks which agents</text>
+    <text x="632" y="274" fill="#374151">the config targets (empty = all).</text>
+
+    <circle cx="620" cy="350" r="3" fill="#2563eb"/>
+    <text x="632" y="340" font-weight="700" fill="#2563eb">YAML body</text>
+    <text x="632" y="358" fill="#374151">prefilled from the current version;</text>
+    <text x="632" y="374" fill="#374151">read-only for viewers.</text>
+
+    <circle cx="620" cy="450" r="3" fill="#2563eb"/>
+    <text x="632" y="440" font-weight="700" fill="#2563eb">Validation status</text>
+    <text x="632" y="458" fill="#374151">role="status": "valid yaml" or the</text>
+    <text x="632" y="474" fill="#374151">parser error (client-side js-yaml).</text>
+
+    <circle cx="620" cy="545" r="3" fill="#2563eb"/>
+    <text x="632" y="535" font-weight="700" fill="#2563eb">Save</text>
+    <text x="632" y="553" fill="#374151">hidden for viewers; disabled until</text>
+    <text x="632" y="569" fill="#374151">name + YAML are set. Writes a new</text>
+    <text x="632" y="585" fill="#374151">immutable version, then opens history.</text>
+  </g>
+</svg>
